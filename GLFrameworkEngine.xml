@@ -1,0 +1,1580 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GLFrameworkEngine</name>
+    </assembly>
+    <members>
+        <member name="P:GLFrameworkEngine.MaterialAsset.CachedBakedTextures">
+            <summary>
+            Gets or sets a list of baked textures cached to this material. 
+            Baked textures can be kept during the process of swapping different materials.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.TextureAsset.RenderableTex">
+            <summary>
+            The rendered texture instance used to display the texture in OpenGL.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.Camera.AnimationKeys">
+            <summary>
+            Keyed values for animating a camera.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.ZoomSpeed">
+            <summary>
+            The speed of the camera used when zooming.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.PanSpeed">
+            <summary>
+            The speed of the camera used when padding.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.KeyMoveSpeed">
+            <summary>
+            The move speed of the camera used when using key movements.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.Width">
+            <summary>
+            The width of the camera fustrum.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.Height">
+            <summary>
+            The height of the camera fustrum.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.AspectRatio">
+            <summary>
+            The aspect ratio of the camera fustrum.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.FovDegrees">
+            <summary>
+            The field of view in degrees.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.Fov">
+            <summary>
+            The field of view in radians.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.ZNear">
+            <summary>
+            The z near value.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.ZFar">
+            <summary>
+            The z far value.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.Camera.RotationX">
+            <summary>
+            The rotation of the camera on the X axis in radians.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.Camera.RotationY">
+            <summary>
+            The rotation of the camera on the Y axis in radians.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.RotationDegreesX">
+            <summary>
+            The rotation of the camera on the X axis in degrees.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.RotationDegreesY">
+            <summary>
+            The rotation of the camera on the Y axis in degrees.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.LockRotation">
+            <summary>
+            Locks the camera state to prevent rotations.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.TargetPosition">
+            <summary>
+            The position of the camera in world space.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.Controller">
+            <summary>
+            The controller of the camera to handle user movement.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.IsOrthographic">
+            <summary>
+            Toggles orthographic projection in the camera.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.Distance">
+            <summary>
+            Gets the distance of the camera.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.TargetDistance">
+            <summary>
+            The distance to the camera target
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.ModelMatrix">
+            <summary>
+            Gets the model matrix of the camera.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.ViewProjectionMatrix">
+            <summary>
+            Gets the combined view projection matrix of the camera.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.ProjectionMatrix">
+            <summary>
+            Gets or sets the projection matrix.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.ViewMatrix">
+            <summary>
+            Gets or sets the view matrix.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.InverseRotationMatrix">
+            <summary>
+            Gets or sets the inverse rotation matrix.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.InvertRotationX">
+            <summary>
+            Inverts the camera rotation controls on the X axis.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.InvertRotationY">
+            <summary>
+            Inverts the camera rotation controls on the Y axis.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.FactorX">
+            <summary>
+            The horizontal aspect factor of the camera fustrum.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.FactorY">
+            <summary>
+            The verticle aspect factor of the camera fustrum.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.Depth">
+            <summary>
+            The depth of the mouse cursor.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.AnimationTimer">
+            <summary>
+            The animation timer used during camera transitional movements.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.Camera.ResetTransform">
+            <summary>
+            Resets the camera transform values.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.Camera.ResetViewportTransform">
+            <summary>
+            Resets the viewport camera transform values.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.Camera.RotateFromLookat(OpenTK.Vector3,OpenTK.Vector3)">
+            <summary>
+            Rotates the camera from a given eye and target position.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.Camera.ScaleByCameraDistance(OpenTK.Vector3,System.Single)">
+            <summary>
+            Calculates a scaling factor given the camera distance.
+            This can be used for objects to maintain their scale while the camera moves.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.Camera.UpdateMatrices">
+            <summary>
+            Updates the view and projection matrices with current camera data.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.Camera.FocusOnObject(GLFrameworkEngine.GLTransform,System.Single)">
+            <summary>
+            Transforms the camera position to focus on the given transformation.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.Camera.InFustrum(GLFrameworkEngine.BoundingNode)">
+            <summary>
+            Checks if a bounding node is within the camera fustrum.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.Camera.InRange(OpenTK.Vector3,System.Single)">
+            <summary>
+            Checks if the given position is in range with the camera position.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.Camera.GetViewPostion">
+            <summary>
+            Gets the camera view position.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.Mode">
+            <summary>
+            Sets and updates the camera controller mode.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.Direction">
+            <summary>
+            Gets and sets the current camera direction being faced.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.RotationLookat">
+            <summary>
+            Sets the rotation type to a look at type. Generally used for animating.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.EyeTarget">
+            <summary>
+            Gets or sets the eye target for look at rotation type.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Camera.Twist">
+            <summary>
+            Gets or sets the Z rotation for look at rotation type.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.Camera.GetProjectionMatrix">
+            <summary>
+            Gets the calculated projection matrix.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.Camera.GetViewMatrix">
+            <summary>
+            Gets the calculated view matrix.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.Camera.ResetAnimations">
+            <summary>
+            Resets the keyed animation data for the camera.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.Camera.SetKeyframe(GLFrameworkEngine.CameraAnimationKeys,System.Single)">
+            <summary>
+            Sets a key value for animation usage.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.Camera.StartCameraAnimation(System.Collections.Generic.Dictionary{GLFrameworkEngine.CameraAnimationKeys,System.Single},System.Single)">
+            <summary>
+            Starts a simple camera animation between the current and given target values during a given frame count.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.Camera.CoordFor(System.Int32,System.Int32,System.Single)">
+            <summary>
+            Gets the 3D coordinates for the given mouse XY coordinates and depth value.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:GLFrameworkEngine.BoundingBox.Min">
+            <summary>
+            The minimum point in the box.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.BoundingBox.Max">
+            <summary>
+            The maximum point in the box.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.BoundingBox.GetCenter">
+            <summary>
+            Gets the center of the bounding box.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.BoundingBox.GetExtent">
+            <summary>
+            Gets the extent of the bounding box.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.BoundingBox.GetSize">
+            <summary>
+            Gets the size of the bounding box.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.BoundingBox.IsInside(OpenTK.Vector3)">
+            <summary>
+            Checks if a point is inside this bounding box.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.BoundingBox.IsInside(GLFrameworkEngine.BoundingBox)">
+            <summary>
+            Checks if a bounding box is fully inside this bounding box.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.BoundingBox.IsOverlapping(GLFrameworkEngine.BoundingBox)">
+            <summary>
+            Checks if a bounding box is partially inside this bounding box.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.BoundingBox.UpdateTransform(OpenTK.Matrix4)">
+            <summary>
+            Updates the current box points from the given transform.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.BoundingBox.FromMinMax(OpenTK.Vector3,OpenTK.Vector3)">
+            <summary>
+            Creates a bounding box from a min and max vertex point.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.BoundingBox.CalculateMinMax(OpenTK.Vector3[],OpenTK.Vector3@,OpenTK.Vector3@)">
+            <summary>
+            Gets the min and max vector values from an array of points for creating a bounding box.
+            </summary>
+            <param name="points"></param>
+            <param name="min"></param>
+            <param name="max"></param>
+        </member>
+        <member name="T:GLFrameworkEngine.BoundingNode">
+            <summary>
+            Repesents a node that can be detected from the camera fustrum.
+            These are used for culling in the camera fustrum.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.BoundingNode.Children">
+            <summary>
+            The children nodes used for additional cull searching. 
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.BoundingNode.Box">
+            <summary>
+            The bounding box of the node.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.BoundingNode.Center">
+            <summary>
+            The center of the bounding sphere.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.BoundingNode.Radius">
+            <summary>
+            The radius of the bounding sphere.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.BoundingNode.GetCenter">
+            <summary>
+            Gets the center point of the bounding node in world coordinates used to place the sphere.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:GLFrameworkEngine.BoundingNode.GetRadius">
+            <summary>
+            The bounding radius size for sphere detection in world coordinates.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:GLFrameworkEngine.BoundingNode.UpdateTransform(OpenTK.Matrix4)">
+            <summary>
+            Updates the bounding radius and bounding boxes with the given transform.
+            </summary>
+            <param name="transform"></param>
+        </member>
+        <member name="M:GLFrameworkEngine.BoundingNode.CreateOctree">
+            <summary>
+            Generates 8 sub bounding octrees inside the boudning node.
+            </summary>
+        </member>
+        <member name="T:GLFrameworkEngine.CameraFrustum">
+            <summary>
+            Detects if objects are within the given camera's Frustum
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.CameraFrustum.UpdateCamera(GLFrameworkEngine.Camera)">
+            <summary>
+            Updates the Frustum planes using the given control's camera and projection matricies.
+            This must be called each time the camera is updated.
+            </summary>
+            <param name="camera"></param>
+        </member>
+        <member name="M:GLFrameworkEngine.CameraFrustum.CheckIntersection(GLFrameworkEngine.Camera,GLFrameworkEngine.BoundingNode)">
+            <summary>
+            Determines if the given bounding node is within the current camera Frustum.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.CameraFrustum.ContainsSphere(OpenTK.Vector4[],OpenTK.Vector3,System.Single)">
+            <summary>
+            Checks if the given sphere is contained within the plane Frustum.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.CameraFrustum.ContainsBox(OpenTK.Vector4[],GLFrameworkEngine.BoundingBox)">
+            <summary>
+            Checks if the given bounding box is contained within the plane Frustum.
+            </summary>
+        </member>
+        <member name="T:GLFrameworkEngine.BoundingBoxRender">
+            <summary>
+            Represents a lined box renderer from an axis aligned bounding box.
+            </summary>
+        </member>
+        <member name="T:GLFrameworkEngine.CameraRenderer">
+            <summary>
+            A cubic render of the camera fustrum using the view and projection matrix data
+            </summary>
+        </member>
+        <member name="T:GLFrameworkEngine.Cursor3D">
+            <summary>
+            Represents a 3D cursor renderer.
+            This can be used to spawn objects at a specific point 
+            or used as a pivot.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.Cursor3D.Transform">
+            <summary>
+            The transform matrix of the drawable.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.Cursor3D.Material">
+            <summary>
+            The material of the cursor.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Cursor3D.IsVisible">
+            <summary>
+            Toggles visibility of the cursor.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.Cursor3D.SetCursor(GLFrameworkEngine.GLContext,System.Int32,System.Int32)">
+            <summary>
+            Sets the cursor 3d position given the screen coordinates.
+            </summary>
+        </member>
+        <member name="T:GLFrameworkEngine.GenericMaterialRender">
+            <summary>
+            Represents a generic material renderer used by a generic mesh.
+            </summary>
+        </member>
+        <member name="T:GLFrameworkEngine.GenericMeshRender">
+            <summary>
+            Represents a model renderer used by a generic mesh. 
+            In most cases, these are used by file formats to draw their model data.
+            Model formats use <c>STGenericModel</c> hich consists of STGenericMesh meshes.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.GenericMeshRender.ReloadMaterial">
+            <summary>
+            Reloads the material data along with the assigned buffer layouts.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.GenericMeshRender.UpdateVertexData">
+            <summary>
+            Updates the current vertex data with the set of vertices provided by the generic mesh.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.GenericMeshRender.UpdateBoundingBox">
+            <summary>
+            Updates the boundings calculated by the vertex positions of the generic mesh.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.GenericMeshRender.RecalculateOrigin">
+            <summary>
+            Recalculates the vertex positions by turning it into local space from the current transform.
+            This allows the vertices to use the current transform space.
+            </summary>
+        </member>
+        <member name="T:GLFrameworkEngine.OrientationGizmo">
+            <summary>
+            Represents an orientation view cube for displaying the camera orientation.
+            This cube is automatically drawn to the bottom left corner of the current viewport.
+            </summary>
+        </member>
+        <member name="T:GLFrameworkEngine.ScreenQuadRender">
+            <summary>
+            Represents a quad renderer for drawning frame buffers.
+            </summary>
+        </member>
+        <member name="T:GLFrameworkEngine.SpriteDrawer">
+            <summary>
+            Represents a billboarded sprite renderer.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.SpriteDrawer.Transform">
+            <summary>
+            The transform matrix of the drawable.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.SpriteDrawer.Material">
+            <summary>
+            The material of the cursor.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.SpriteDrawer.IsVisible">
+            <summary>
+            Toggles visibility of the cursor.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.SpriteDrawer.IsSelected">
+            <summary>
+            Determines if the sprite is selected or not.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.SpriteDrawer.TextureID">
+            <summary>
+            The texture ID of the sprite.
+            </summary>
+        </member>
+        <member name="T:GLFrameworkEngine.TransformableObject">
+            <summary>
+            Represents a default transformable object with a standard cube drawn.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.Matrix4Extension.CreateRotation(OpenTK.Vector3,OpenTK.Vector3)">
+            <summary>
+            Creates a rotation matrix from normal and tangent data.
+            </summary>
+            <param name="normal"></param>
+            <param name="tangent"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GLFrameworkEngine.Matrix4Extension.CreateTransform(OpenTK.Vector3,OpenTK.Vector3,OpenTK.Vector3)">
+            <summary>
+            Creates a SRT matrix from translation, euler and scale vectors.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.Matrix4Extension.CreateTransform(OpenTK.Vector3,OpenTK.Quaternion,OpenTK.Vector3)">
+            <summary>
+            Creates a SRT matrix from translation, quaternion and scale vectors.
+            </summary>
+        </member>
+        <member name="T:GLFrameworkEngine.FileData.CurveFileData">
+            <summary>
+            Curve data that can be serialized as json into a render curve object.
+            </summary>
+        </member>
+        <member name="T:GLFrameworkEngine.ObjLoader">
+            <summary>
+            Represents a .obj file loader for loading model data.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.ObjLoader.ObjPolygon.Material">
+            <summary>
+            The material used for this face.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.ObjLoader.ObjFace.Vertices">
+            <summary>
+            The three <see cref="T:GLFrameworkEngine.ObjLoader.ObjVertex"/> vertices which define this triangle.
+            </summary>
+        </member>
+        <member name="T:GLFrameworkEngine.ObjLoader.ObjVertex">
+            <summary>
+            Represents the indices required to define a vertex of an <see cref="!:ObjModel"/>.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.ObjLoader.ObjVertex.Position">
+            <summary>
+            The vertex position from the positions array of the owning <see cref="!:ObjModel"/>.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.ObjLoader.ObjVertex.TexCoord">
+            <summary>
+            The vertex texture coordinates from the texture coordinate array of the owning <see cref="!:ObjModel"/>.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.ObjLoader.ObjVertex.Normal">
+            <summary>
+            The vertex normal from the normal array of the owning <see cref="!:ObjModel"/>.
+            </summary>
+        </member>
+        <member name="T:GLFrameworkEngine.ObjLoader.ObjMaterial">
+            <summary>
+            Represents a material in an <see cref="!:ObjModel"/>.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.ObjLoader.ObjMaterial.Name">
+            <summary>
+            Gets or sets the name of the material.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.ObjLoader.ObjMaterial.DiffuseTexture">
+            <summary>
+            Gets or sets the diffuse texture.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.ObjLoader.ObjMaterial.Diffuse">
+            <summary>
+            Gets or sets the diffuse color.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.ObjLoader.ObjMaterial.Ambient">
+            <summary>
+            Gets or sets the amient color.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.ObjLoader.ObjMaterial.Specular">
+            <summary>
+            Gets or sets the specular color.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.GLContext.FrameArgs">
+            <summary>
+            Default rendering arguments when a rendered frame is being drawn.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.GLContext.ScreenBuffer">
+            <summary>
+            The screen buffer storing the current color/depth render texture of the drawn scene objects.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.GLContext.SelectionTools">
+            <summary>
+            Selection tools used for selecting scene objects in different ways.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.GLContext.TransformTools">
+            <summary>
+            Transform tools for transforming scene objects.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.GLContext.PickingTools">
+            <summary>
+            Picking toolsets for picking objects.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.GLContext.ColorPicker">
+            <summary>
+            Color picking for picking scene objects using a color ID pass.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.GLContext.RayPicker">
+            <summary>
+            Ray picking for picking scene objects using bounding radius/boxes.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.GLContext.CollisionCaster">
+            <summary>
+            Collision ray picking for dropping scene objects to collision.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.GLContext.Camera">
+            <summary>
+            The camera instance to use in the scene.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.GLContext.Scene">
+            <summary>
+            The scene information containing the list of drawables along with selection handling.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.GLContext.Width">
+            <summary>
+            The width of the current context. Should be given the width height.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.GLContext.Height">
+            <summary>
+            The height of the current context. Should be given the viewport height.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.GLContext.Focused">
+            <summary>
+            If the current context is in focus or not.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.GLContext.MouseOrigin">
+            <summary>
+            Gets or sets the mouse position after a mouse down event.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.GLContext.CurrentMousePoint">
+            <summary>
+            Gets or sets the current mouse postion.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.GLContext.MouseOffset">
+            <summary>
+            Gets or sets the offset from the mouse origin.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.GLContext.UseSRBFrameBuffer">
+            <summary>
+            Determines to enable SRGB or not for the current context.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.GLContext.EnableBloom">
+            <summary>
+            Toggles bloom usage.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.GLContext.EnableFog">
+            <summary>
+            Toggles fog usage.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.GLContext.EnableDropToCollision">
+            <summary>
+            Toggles dropping objects to collision of the current CollisionCaster or not
+            during a translation transform.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.GLContext.PreviewScale">
+            <summary>
+            The preview scale to scale up model displaying.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.GLContext.Cursor3DPosition">
+            <summary>
+            Gets or sets the 3D Cursor position used for placing objects and custom origin points.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:GLFrameworkEngine.GLContext.PointScreenRay" -->
+        <!-- Badly formed XML comment ignored for member "M:GLFrameworkEngine.GLContext.PointScreenRay(System.Int32,System.Int32)" -->
+        <member name="M:GLFrameworkEngine.GLContext.ScreenCoordFor(OpenTK.Vector3)">
+            <summary>
+            Gets the x y screen coordinates from a 3D position.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.GLContext.GetPointUnderMouse(System.Single)">
+            <summary>
+            Gets a 3D position of the current mouse coordinates given the depth.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.GLContext.CoordFor(System.Single,System.Single,System.Single)">
+            <summary>
+            Gets a 3D position given the screen x y coordinates and depth.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.GLContext.NormalizeMouseCoords(OpenTK.Vector2)">
+            <summary>
+            Converts the given mouse coordinates to normalized coordinate space to use in the GL coordinate system -1 1.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.GLContext.IsShaderActive(GLFrameworkEngine.ShaderProgram)">
+            <summary>
+            Checks if the given shader is active in the context.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.GLContext.CurrentShader">
+            <summary>
+            The current shader in the context to be drawn.
+            If null, will disable drawing the shader.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.BillboardMaterial.Color">
+            <summary>
+            The color of the material output.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.BillboardMaterial.Scale">
+            <summary>
+            The scale of the model.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.BillboardMaterial.ModelMatrix">
+            <summary>
+            The model matrix of the model.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.BillboardMaterial.ScaleByCameraDistance">
+            <summary>
+            Determines to scale the model based on the distance the camera is from the model matrix.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.BillboardMaterial.DisplaySelection">
+            <summary>
+            Displays the material with a selection color.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.BillboardMaterial.TextureID">
+            <summary>
+            The sprite texture ID of the billboarded material.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.BufferObject.Target">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.BufferObject.DataCount">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.BufferObject.DataStride">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.BufferObject.DataSizeInBytes">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.RenderAttribute.Name">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.RenderAttribute.Location">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.RenderAttribute.Type">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.RenderAttribute.Offset">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.RenderAttribute.Size">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.RenderAttribute.ElementCount">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.RenderAttribute.Normalized">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.RenderMesh`1.UpdateInstanceData``1(``0[])">
+            <summary>
+            Updates the existing instanced data. 
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.RenderMesh`1.LoadInstanceAttributes``1(``0[])">
+            <summary>
+            Loads instanced data into the current vertex array object.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.RenderMeshBase.Draw(GLFrameworkEngine.GLContext)">
+            <summary>
+            Draws a model with the current context.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.VertexArrayObject.#ctor(System.Int32,System.Nullable{System.Int32})">
+            <summary>
+            Creates an object to which you can add Attributes. When you are done call Submit()!
+            </summary>
+            <param name="buffer">The opengl buffer where all the vertexdata is/will be stored</param>
+            <param name="indexBuffer">The opengl buffer where all the indices are/will be stored</param>
+        </member>
+        <member name="M:GLFrameworkEngine.VertexArrayObject.AddAttribute(System.Int32,System.Int32,OpenTK.Graphics.OpenGL.VertexAttribPointerType,System.Boolean,System.Int32,System.Int32)">
+            <summary>
+            Adds an attribute to the current vertex layout.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.VertexArrayObject.Delete">
+            <summary>
+            Deletes the vertex array object.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.VertexArrayObject.Initialize">
+            <summary>
+            Inits the vertex array object with a new ID.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.VertexArrayObject.Bind">
+            <summary>
+            Binds the vertex data buffer
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.VertexArrayObject.Use">
+            <summary>
+            Binds this VertexArrayObject and the associated IndexBuffer if there is one
+            </summary>
+            <param name="control"></param>
+        </member>
+        <member name="T:GLFrameworkEngine.VertexBufferObject">
+            <summary>
+            A vertex buffer object that supports loading multiple attributes and buffers.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.RenderablePath.CreateLinearStandard(System.Single)">
+            <summary>
+            Creates a standard bezier curve using 2 points with handles.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.RenderablePath.CreateBezierStandard(System.Single)">
+            <summary>
+            Creates a standard bezier curve using 2 points with handles.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.RenderablePath.CreateBezierCircle(System.Single)">
+            <summary>
+            Creates a looped circle of a bezier curve.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.RenderablePath.PathPoints">
+            <summary>
+            A list of all the points used in the path object.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.RenderablePath.ScaleByCamera">
+            <summary>
+            Determines to scale points based on camera distance.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.RenderablePath.ScaleByPointSize">
+            <summary>
+            Determines to scale points based on configurable point sizes.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.RenderablePath.CameraScaleFactor">
+            <summary>
+            Determines the factor scale points based on camera distance.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.RenderablePath.ArrowScale">
+            <summary>
+            Determines the arrow size
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.RenderablePath.IsArrowCentered">
+            <summary>
+            Determines to draw the arrow in between points. Defaults to the child if disabled.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.RenderablePath.LineWidth">
+            <summary>
+            Determines the thickness of the line connecting the points
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.RenderablePath.DefaultScale">
+            <summary>
+            The scale to default to when a point is created
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.RenderablePath.LineOffset">
+            <summary>
+            The offset of the line in the Y axis when drawn. 
+            Can prevent z fighting points depenting on how the point is drawn
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.RenderablePath.AutoConnectByNext">
+            <summary>
+            Determines to auto connect points by the next point as one connection to the next.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.RenderablePath.CalculateSelectedOrigin">
+            <summary>
+            Calculates the center origin of all the selected path points.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:GLFrameworkEngine.RenderablePath.CalculateOrigin">
+            <summary>
+            Calculates the center origin of all the path points.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:GLFrameworkEngine.RenderablePath.GetSelectedPoints">
+            <summary>
+            Gets all the selected points in the path object.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:GLFrameworkEngine.RenderablePath.GetHoveredPoints">
+            <summary>
+            Gets all the hovered points in the path object.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:GLFrameworkEngine.RenderablePathPoint.UINode">
+            <summary>
+            The tree node attached to the point for the outliner.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.RenderablePathPoint.Transform">
+            <summary>
+            The transformation of the point.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.RenderablePathPoint.IsHovered">
+            <summary>
+            Determines if the current point is being hovered or not.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.RenderablePathPoint.IsSelected">
+            <summary>
+            Determines if the current point is being selected or not.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.RenderablePathPoint.RaySphereSize">
+            <summary>
+            Ray bounding size for the sphere.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.RenderablePathPoint.CameraScale">
+            <summary>
+            The camera scale for the point to scale by camera distance.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.RenderablePathPoint.Normal">
+            <summary>
+            The normal vector of the point.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.RenderablePathPoint.CanSelect">
+            <summary>
+            Determines if the point can be selected or not.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.RenderablePathPoint.GetRayBounding">
+            <summary>
+            Gets the bounding ray for ray testing the current point sphere.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.RenderablePathPoint.Index">
+            <summary>
+            Gets the index of the point from the parent path.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.RenderablePathPoint.IsVisible">
+            <summary>
+            Determines if the point is visible or not.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.RenderablePathPoint.IsPointOver">
+            <summary>
+            Determines if the point is hovered over or not during a connection.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.ColorPicker.SearchPickedColor(System.UInt32)">
+            <summary>
+            Searches and returns the object that has a color id match from the picking color buffer.
+            </summary>
+            <param name="color"></param>
+            <returns></returns>
+        </member>
+        <member name="T:GLFrameworkEngine.IDragDropPicking">
+            <summary>
+            Drag drop events for when something is drag/dropped onto a rendered 3D object.
+            The object also must use an IPickable interface.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.PickingTool.UseEyeDropper">
+            <summary>
+            Determines to enable the eye dropper tool.
+            This will run OnObjectPicked event when the user picks a model.
+            </summary>
+        </member>
+        <member name="T:GLFrameworkEngine.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Properties.Resources.DefaultTexture">
+            <summary>
+              Looks up a localized resource of type System.Byte[].
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Properties.Resources.boneWeightGradient">
+            <summary>
+              Looks up a localized resource of type System.Byte[].
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Properties.Resources.boneWeightGradient2">
+            <summary>
+              Looks up a localized resource of type System.Byte[].
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Properties.Resources.UVPattern">
+            <summary>
+              Looks up a localized resource of type System.Byte[].
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Properties.Resources.Cube">
+            <summary>
+              Looks up a localized resource of type System.Byte[].
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.Properties.Resources.ObjectSprite">
+            <summary>
+              Looks up a localized resource of type System.Byte[].
+            </summary>
+        </member>
+        <member name="T:GLFrameworkEngine.RenderFrameArgs">
+            <summary>
+            Parameters for how a rendered frame is displayed
+            </summary>
+        </member>
+        <member name="T:GLFrameworkEngine.EditableObject">
+            <summary>
+            Represents a base class for editable objects. 
+            This can be used for transforming/selecting objects, 
+            attaching GUI nodes and rendering models.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.EditableObject.IsVisible">
+            <summary>
+            Determines if the object is visible.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.EditableObject.Transform">
+            <summary>
+            The transform of the object.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.EditableObject.IsHovered">
+            <summary>
+            Determines if the object is in a hovered state or not.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.EditableObject.IsSelected">
+            <summary>
+            Determines if the object is in a selected state or not.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.EditableObject.CanSelect">
+            <summary>
+            Determines if the object can select or not.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.EditableObject.UINode">
+            <summary>
+            The node of the object to display in the GUI.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.EditableObject.ParentUINode">
+            <summary>
+            The parent node of the UI node.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.EditableObject.SpriteDrawer">
+            <summary>
+            A drawer for displaying UI sprites of the object when it is at a distance.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.GLScene.ToggleEditMode">
+            <summary>
+            Toggles edit mode for an editable part object.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.GLScene.ShadowRenderer">
+            <summary>
+            The shadow rendering engine used to draw cascaded shadow maps.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.GLScene.Cursor3D">
+            <summary>
+            The 3D cursor for placing objects down.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.GLScene.Objects">
+            <summary>
+            The object list drawn in the scene.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.GLScene.EditModeObjects">
+            <summary>
+            A list of objects in edit mode.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.GLScene.GetSelectableObjects">
+            <summary>
+            Gets objects which can be transformed and edited.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.GLScene.BeginUndoCollection">
+            <summary>
+            Starts adding called AddToUndo() into a collection.
+            Must be ended using EndUndoCollection().
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.GLScene.EndUndoCollection">
+            <summary>
+            Ends the undo collection.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.GLScene.AddToUndo(GLFrameworkEngine.IRevertable)">
+            <summary>
+            Adds a revertable action to the undo stack.
+            </summary>
+            <param name="revertable"></param>
+        </member>
+        <member name="M:GLFrameworkEngine.GLScene.Undo">
+            <summary>
+            Undo the current operation in the undo stack.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.GLScene.Redo">
+            <summary>
+            Redo the current operation in the redo stack.
+            </summary>
+        </member>
+        <member name="T:GLFrameworkEngine.IEditModeObject">
+            <summary>
+            Used to toggle edit mode for the object.
+            </summary>
+        </member>
+        <member name="T:GLFrameworkEngine.ScreenBufferTexture">
+            <summary>
+            Creates a screen buffer texture of the current color buffer.
+            This is drawn before meshes with the UserColorPass setting used.
+            Meshes with UserColorPass can obtain the buffer with GetColorBuffer()
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.GlobalShaders.GetShader(System.String,System.String)">
+            <summary>
+            Gets a shader given a key to store them in and a shader file path.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.GlobalShaders.GetShader(System.String)">
+            <summary>
+            Gets a shader given a key they are stored in.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.ShadowBox.ShadowFrustumPlanes">
+            <summary>
+            The frustum planes of the shadow box.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.ShadowMainRenderer.GetShadowFrustum">
+            <summary>
+            Gets the frustum planes used to check if a shadow mesh should draw or not.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:GLFrameworkEngine.ShadowMainRenderer.GetProjectedShadow">
+            <summary>
+            Gets the projected cascaded shadow map generated from the shadow renderer.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:GLFrameworkEngine.ShadowMainRenderer.GetLightSpaceViewProjMatrix">
+            <summary>
+            Gets the light space shadow matrix used to project shadows into.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:GLFrameworkEngine.ShadowMainRenderer.GetLightDirection">
+            <summary>
+            Gets the light direction used for directional shadows.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:GLFrameworkEngine.ShadowMainRenderer.DrawShadowPrePass(GLFrameworkEngine.GLContext,GLFrameworkEngine.GLTexture)">
+            <summary>
+            Draws a debug quad for shadow pre pass
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.ShadowMainRenderer.DrawDebugQuad(GLFrameworkEngine.GLContext)">
+            <summary>
+            Draws a debug quad for shadow projection map
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.GLTransformConfig.ForceLocalScale">
+            <summary>
+            Makes the scale local instead of world space.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.RotateAction.UseGizmo">
+            <summary>
+            Toggles using gizmo.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.RotateAction.ActiveAxis">
+            <summary>
+            Gets or sets the active axis.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.RotateAction.IsActive">
+            <summary>
+            Determines if the translation action is in an active state or not.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.RotateAction.DeltaRotation">
+            <summary>
+            Gets or sets the scale from being dragged.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.RotateAction.OriginStart">
+            <summary>
+            The origin before transformation is applied.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.RotateAction.Origin">
+            <summary>
+            Gets or sets the origin of the transformation object.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.ScaleAction.UseGizmo">
+            <summary>
+            Toggles using gizmo.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.ScaleAction.ActiveAxis">
+            <summary>
+            Gets or sets the active axis.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.ScaleAction.IsActive">
+            <summary>
+            Determines if the translation action is in an active state or not.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.ScaleAction.ScaleFactor">
+            <summary>
+            Gets or sets the scale from being dragged.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.ScaleAction.Rotation">
+            <summary>
+            Gets or sets the rotation for local axis transforming.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.ScaleAction.OriginStart">
+            <summary>
+            The origin before transformation is applied.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.ScaleAction.Origin">
+            <summary>
+            Gets or sets the origin of the transformation object.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.TransformEngine.ActiveMode">
+            <summary>
+            The active mode when an active action has been set.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.TransformEngine.ActiveAction">
+            <summary>
+            The active transform action.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.TransformEngine.TransformSettings">
+            <summary>
+            The transform settings of the engine.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.TransformEngine.TransformChanged">
+            <summary>
+            An event for when the transform has been changed.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.TransformEngine.UndoChanged">
+            <summary>
+            An event called before the undo operation is executed.
+            Add any additional undo operations in this to be undone in a collection at once.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.TransformEngine.GizmoSize">
+            <summary>
+            The inital gizmo size before being scaled by the camera distance.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.TransformEngine.ReleaseTransform">
+            <summary>
+            Skips the selection action when the mouse has been clicked during a shortcut action.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.TransformEngine.IsActive">
+            <summary>
+            Determines if a transform is currently active.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.TransformEngine.GetTextInput">
+            <summary>
+            Gets the text input from typing the transform value.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.TransformEngine._draggedTransform">
+            Check if the transform is being dragged (activated by a shortcut key)
+        </member>
+        <member name="M:GLFrameworkEngine.TransformEngine.InitAction(System.Collections.Generic.List{GLFrameworkEngine.ITransformableObject})">
+            <summary>
+            Inits an action so one can transform selected objects.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.TransformEngine.DragTransformAction(GLFrameworkEngine.GLContext,GLFrameworkEngine.TransformEngine.TransformActions)">
+            <summary>
+            Starts a transformation for dragging the action.
+            This will revert back to the previous action after applied.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.TransformEngine.StartAction(GLFrameworkEngine.GLContext,GLFrameworkEngine.TransformEngine.TransformActions)">
+            <summary>
+            Starts an active transform action using all axis direction. 
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.TransformEngine.ApplyTransform">
+            <summary>
+            Applies the current transformation for the active action.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.TransformEngine.UpdateAxis(GLFrameworkEngine.GLContext,GLFrameworkEngine.TransformEngine.Axis)">
+            <summary>
+            Updates the current axis to be used during a transformation.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.TransformEngine.UpdateTransformMode(GLFrameworkEngine.TransformEngine.TransformActions)">
+            <summary>
+            Updates the current transformation mode for transforming selected objects.
+            </summary>
+            <param name="action"></param>
+        </member>
+        <member name="M:GLFrameworkEngine.TransformEngine.UpdateOrigin">
+            <summary>
+            Updates the current origin used for the gizmo tool.
+            This affects scaling and rotation from origin too.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.TransformSettings.GizmoScale">
+            <summary>
+            The scale of the gizmo adjusted on the distance of the camera and gizmo itself.
+            Updates during the render loop for the gizmo rendering.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.TranslateAction.ActiveAxis">
+            <summary>
+            Gets or sets the active axis.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.TranslateAction.TranslationOffset">
+            <summary>
+            Gets or sets the translation offset from being dragged.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.TranslateAction.OriginStart">
+            <summary>
+            The origin before transformation is applied.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.TranslateAction.Origin">
+            <summary>
+            Gets or sets the origin of the transformation object.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.GLTransform.Config">
+            <summary>
+            Configuration for transforming this specific transform object,
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.GLTransform.ModelBounding">
+            <summary>
+            The model bounding for the transform object.
+            Currently used to determine collision handling 
+            for detecting collision drops in the transform.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.GLTransform.Position">
+            <summary>
+            Gets or sets the position of the bone in world space.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.GLTransform.Rotation">
+            <summary>
+            Gets or sets the rotation of the bone in world space.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.GLTransform.RotationEuler">
+            <summary>
+            Gets or sets the <see cref="P:GLFrameworkEngine.GLTransform.Rotation"/> using euler method in radians. 
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.GLTransform.RotationEulerDegrees">
+            <summary>
+            Gets or sets the <see cref="P:GLFrameworkEngine.GLTransform.Rotation"/> using euler method in degrees. 
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.GLTransform.Scale">
+            <summary>
+            Gets or sets the scale of the bone in world space.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.GLTransform.UpdateTransform">
+            <summary>
+            Determines to update the transform or not.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.GLTransform.TransformMatrix">
+            <summary>
+            Gets or sets the calculated transform matrix.
+            </summary>
+        </member>
+        <member name="P:GLFrameworkEngine.GLTransform.TransformNoScaleMatrix">
+            <summary>
+            Gets or sets the calculated transform matrix.
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.GLTransform.BeforeTransformUpdate">
+            <summary>
+            A callback for before the transform has been updated
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.GLTransform.TransformUpdated">
+            <summary>
+            A callback for after the transform has been updated
+            </summary>
+        </member>
+        <member name="F:GLFrameworkEngine.GLTransform.TransformApplied">
+            <summary>
+            A callback for when the transform has been applied using a transform tool.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.GLTransform.UpdateMatrix(System.Boolean)">
+            <summary>
+            Updates the TransformMatrix from the current position, scale and rotation values.
+            </summary>
+        </member>
+        <member name="T:GLFrameworkEngine.UILayout">
+            <summary>
+            Represents an instance capable of creating UI layouts from provided properties.
+            </summary>
+        </member>
+        <member name="T:GLFrameworkEngine.Utils.BoundingSphereGenerator">
+            <summary>
+            Contains methods to generate a bounding sphere for a collection of vertices.
+            </summary>
+        </member>
+        <member name="M:GLFrameworkEngine.Utils.BoundingSphereGenerator.GenerateBoundingSphere(System.Collections.Generic.IList{OpenTK.Vector3})">
+            <summary>
+            Generates a close to optimal sphere that contains all of the given points
+            within the sphere.
+            Returns Vector4(center.Xyz, radius).
+            </summary>
+            <param name="points">The points that should be contained within the bounding sphere</param>
+            <returns>Vector4(center.Xyz, radius)</returns>
+        </member>
+        <member name="M:GLFrameworkEngine.Utils.BoundingSphereGenerator.GenerateBoundingSphere(System.Collections.Generic.IEnumerable{OpenTK.Vector4})">
+            <summary>
+            Generates a single bounding sphere that contains all the given
+            bounding spheres.
+            </summary>
+            <param name="boundingSpheres">The list of bounding sphere centers (xyz) and radii (w)</param>
+            <returns>A single bounding sphere that contains <paramref name="boundingSpheres"/></returns>
+        </member>
+        <member name="M:GLFrameworkEngine.EditorUtility.GetObjectPlacementPosition">
+            <summary>
+            Gets the current position for spawning objects.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:GLFrameworkEngine.EditorUtility.SetObjectPlacementPosition(GLFrameworkEngine.GLTransform,System.Boolean)">
+            <summary>
+            Sets the current transform for spawning objects.
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
