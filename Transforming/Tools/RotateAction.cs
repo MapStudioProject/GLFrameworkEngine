@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using OpenTK;
 using Toolbox.Core;
@@ -129,7 +129,7 @@ namespace GLFrameworkEngine
             }
 
             if (angle != 0)
-                DeltaRotation = GetRotation((float)angle);
+                DeltaRotation = GetRotation((float)angle, previousRotation);
 
             //Update the rotation of the gizmo real time for viewing
 
@@ -162,7 +162,7 @@ namespace GLFrameworkEngine
                 //Text input to manually set specific values
                 if (transformTools.TransformSettings.HasTextInput) {
                     float angle = transformTools.TransformSettings.TextInput;
-                    rotation = GetRotation(MathHelper.DegreesToRadians(angle));
+                    rotation = GetRotation(MathHelper.DegreesToRadians(angle), previous.Rotation);
                 }
                 //Custom actions
                 if (adjustedTransforms[i].CustomRotationActionCallback != null)
@@ -199,7 +199,7 @@ namespace GLFrameworkEngine
             }
         }
 
-        private Quaternion GetRotation(float angle)
+        private Quaternion GetRotation(float angle, Quaternion previousRotation)
         {
             Vector3 vec = GLContext.ActiveContext.Camera.InverseRotationMatrix.Row2;
             switch (Settings.ActiveAxis)
@@ -208,7 +208,11 @@ namespace GLFrameworkEngine
                 case TransformEngine.Axis.Y: vec = Vector3.UnitY; break;
                 case TransformEngine.Axis.Z: vec = Vector3.UnitZ; break;
             }
-           return Quaternion.FromAxisAngle(vec, (float)angle);
+
+            if (Settings.ActiveAxis == TransformEngine.Axis.All)
+                vec = previousRotation.Inverted() * vec;
+
+            return Quaternion.FromAxisAngle(vec, (float)angle);
         }
 
         private Vector3 GetAxis(TransformEngine.Axis axis)
