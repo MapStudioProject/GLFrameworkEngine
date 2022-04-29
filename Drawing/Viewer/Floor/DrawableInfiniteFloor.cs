@@ -38,8 +38,8 @@ namespace GLFrameworkEngine
             var mtxProj = control.Camera.ProjectionMatrix;
             gridShaderProgram.SetMatrix4x4("mtxView", ref mtxView);
             gridShaderProgram.SetMatrix4x4("mtxProj", ref mtxProj);
-            gridShaderProgram.SetFloat("near", 0.01f);
-            gridShaderProgram.SetFloat("far", 10);
+            gridShaderProgram.SetFloat("znear", 0.01f);
+            gridShaderProgram.SetFloat("zfar", 10);
             gridShaderProgram.SetBoolToInt("solidFloor", IsSolid);
             gridShaderProgram.SetBoolToInt("spotLight", IsSpotlight);
             gridShaderProgram.SetVector3("gridColor", new Vector3(
