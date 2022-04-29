@@ -242,7 +242,7 @@ namespace GLFrameworkEngine
         public int this[string name]
         {
             get { return uniforms[name]; }
-        }
+        }   
 
         private void LoadUniorms(int program)
         {
@@ -252,7 +252,7 @@ namespace GLFrameworkEngine
             for (int i = 0; i < activeAttributeCount; i++)
             {
                 string name = GL.GetActiveUniform(program, i, out int size, out ActiveUniformType type);
-                if (name == null || name.StartsWith("gl_DepthRange"))
+                if (string.IsNullOrEmpty(name))
                     continue;
 
                 int location = GL.GetUniformLocation(program, name);
