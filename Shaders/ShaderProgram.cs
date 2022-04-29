@@ -252,8 +252,10 @@ namespace GLFrameworkEngine
             for (int i = 0; i < activeAttributeCount; i++)
             {
                 string name = GL.GetActiveUniform(program, i, out int size, out ActiveUniformType type);
-                int location = GL.GetUniformLocation(program, name);
+                if (name == null || name.StartsWith("gl_DepthRange"))
+                    continue;
 
+                int location = GL.GetUniformLocation(program, name);
                 // Overwrite existing vertex attributes.
                 uniforms[name] = location;
             }
