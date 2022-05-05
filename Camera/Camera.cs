@@ -467,7 +467,7 @@ namespace GLFrameworkEngine
             return pos + InverseRotationMatrix.Row2 * dist;
         }
 
-        public Vector3 GetLookAtPostion(float dist = 0)
+        public Vector3 GetLookAtPostion(float dist = 1.0f)
         {
             //Get the eye direction and subtract from the camera position
             return GetViewPostion() - InverseRotationMatrix.Row2 * dist;
