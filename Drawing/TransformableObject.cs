@@ -25,12 +25,12 @@ namespace GLFrameworkEngine
 
         public bool DrawCube = true;
 
-        public float Scale = 1.0f;
+        private float Scale = 1.0f;
 
         public BoundingNode Boundings = new BoundingNode()
         {
             Center = new Vector3(0, 0, 0),
-            Box = new BoundingBox(new Vector3(-10 * Scale), new Vector3(10 * Scale)),
+            Box = new BoundingBox(new Vector3(-10), new Vector3(10)),
         };
 
         public bool IsInsideFrustum(GLContext context) {
@@ -39,6 +39,9 @@ namespace GLFrameworkEngine
 
         public TransformableObject(NodeBase parent, float scale = 1.0f) : base(parent)
         {
+            Boundings.Box.Min *= scale;
+            Boundings.Box.Max *= scale;
+
             Scale = scale;
             //Update boundings on transform changed
             this.Transform.TransformUpdated += delegate {
