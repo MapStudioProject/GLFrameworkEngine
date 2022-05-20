@@ -25,18 +25,21 @@ namespace GLFrameworkEngine
 
         public bool DrawCube = true;
 
+        public float Scale = 1.0f;
+
         public BoundingNode Boundings = new BoundingNode()
         {
             Center = new Vector3(0, 0, 0),
-            Box = new BoundingBox(new Vector3(-10), new Vector3(10)),
+            Box = new BoundingBox(new Vector3(-10 * Scale), new Vector3(10 * Scale)),
         };
 
         public bool IsInsideFrustum(GLContext context) {
             return context.Camera.InFustrum(Boundings);
         }
 
-        public TransformableObject(NodeBase parent) : base(parent)
+        public TransformableObject(NodeBase parent, float scale = 1.0f) : base(parent)
         {
+            Scale = scale;
             //Update boundings on transform changed
             this.Transform.TransformUpdated += delegate {
                 Boundings.UpdateTransform(this.Transform.TransformMatrix);
@@ -84,9 +87,9 @@ namespace GLFrameworkEngine
         private void Prepare()
         {
             if (CubeRenderer == null || CubeRenderer.IsDisposed)
-                CubeRenderer = new UVCubeRenderer(10);
+                CubeRenderer = new UVCubeRenderer(10 * Scale);
             if (AxisObject == null && !DrawCube) {
-                AxisObject = new AxisLines(60);
+                AxisObject = new AxisLines(60 * Scale);
             }
         }
 
