@@ -313,6 +313,11 @@ namespace GLFrameworkEngine
         }
 
         /// <summary>
+        /// The camera distance when an object is being focused on.
+        /// </summary>
+        public float FocusDistance = 200.0f;
+
+        /// <summary>
         /// The depth of the mouse cursor.
         /// </summary>
         public float Depth { get; set; }
@@ -412,7 +417,7 @@ namespace GLFrameworkEngine
         /// <summary>
         /// Transforms the camera position to focus on the given transformation.
         /// </summary>
-        public void FocusOnObject(GLTransform transform, float distance = 200) {
+        public void FocusOnObject(GLTransform transform) {
             var position = transform.Position;
 
             //Todo animated camera does not look very good 
@@ -429,9 +434,9 @@ namespace GLFrameworkEngine
 
             _targetPosition = position;
             if (cameraMode == CameraMode.Inspect)
-                _targetDistance = distance;
+                _targetDistance = FocusDistance;
             else
-                TargetPosition += Vector3.Transform(InverseRotationMatrix, new Vector3(0, 0, distance));
+                TargetPosition += Vector3.Transform(InverseRotationMatrix, new Vector3(0, 0, FocusDistance));
         }
 
         /// <summary>

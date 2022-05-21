@@ -110,7 +110,8 @@ namespace GLFrameworkEngine
                         float acosAngle = Math.Clamp(Vector3.Dot(localPos, rotVecSrc), -1, 1);
                         angle = MathF.Acos(acosAngle);
                         angle *= (Vector3.Dot(localPos, perpendicularVector) < 0.0f) ? 1.0f : -1.0f;
-                        settings.RotationAngle = (float)angle;
+                        if (angle != float.NaN)
+                            settings.RotationAngle = (float)angle;
                     }
                 }
             }
@@ -128,7 +129,7 @@ namespace GLFrameworkEngine
                 angle = Math.Round(angle / snap) * snap;
             }
 
-            if (angle != 0)
+            if (angle != 0 && angle != float.NaN)
                 DeltaRotation = GetRotation((float)angle, previousRotation);
 
             //Update the rotation of the gizmo real time for viewing
