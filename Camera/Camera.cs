@@ -442,6 +442,14 @@ namespace GLFrameworkEngine
         /// <summary>
         /// Checks if a bounding node is within the camera fustrum.
         /// </summary>
+        public CameraFrustum.Frustum GetFustrumState(BoundingNode boundingNode)
+        {
+            return CameraFrustum.CheckIntersectionState(this, boundingNode);
+        }
+
+        /// <summary>
+        /// Checks if a bounding node is within the camera fustrum.
+        /// </summary>
         public bool InFustrum(BoundingNode boundingNode) {
            return CameraFrustum.CheckIntersection(this, boundingNode);
         }

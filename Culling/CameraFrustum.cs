@@ -35,6 +35,33 @@ namespace GLFrameworkEngine
         /// <summary>
         /// Determines if the given bounding node is within the current camera Frustum.
         /// </summary>
+        public Frustum CheckIntersectionState(Camera camera, BoundingNode bounding)
+        {
+            if (Planes == null) UpdateCamera(camera);
+
+            //Check sphere detection
+            var sphereFrustum = ContainsSphere(Planes,
+                bounding.GetCenter(),
+                bounding.GetRadius());
+
+            switch (sphereFrustum)
+            {
+                case Frustum.FULL:
+                    return Frustum.FULL;
+                case Frustum.NONE: //Check the box anyways atm to be sure
+                case Frustum.PARTIAL: //Do bounding box detection
+                    var boxFrustum = ContainsBox(Planes, bounding.Box);
+                    if (boxFrustum != Frustum.NONE)
+                        return Frustum.PARTIAL;
+                    else
+                        break;
+            }
+            return Frustum.NONE;
+        }
+
+        /// <summary>
+        /// Determines if the given bounding node is within the current camera Frustum.
+        /// </summary>
         public bool CheckIntersection(Camera camera, BoundingNode bounding)
         {
             if (Planes == null) UpdateCamera(camera);
