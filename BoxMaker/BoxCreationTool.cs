@@ -119,18 +119,7 @@ namespace GLFrameworkEngine
 
             //Start box action if not started yet
             if (BoxState == State.None)
-            {
-                //Previous movement
-                previousPosition = Vector3.Zero;
-                //Total offset to shift corner
-                offset = Vector3.Zero;
-                //Starting position
-                StartPoint = marker.Transform.Position;
-                //Rotation of box
-            //    Rotation = Matrix3.CreateFromQuaternion(marker.Transform.Rotation);
-                //Create X/Z plane first
-                BoxState = State.CreateWidth;
-            }
+                Start();
             else if (BoxState == State.CreateWidth)
             {
                 //Previous movement
@@ -138,7 +127,13 @@ namespace GLFrameworkEngine
                 //Total offset to shift corner height
                 offset = Vector3.Zero;
                 //Height Y plane
-                BoxState = State.CreateHeight;
+                if (!context.Camera.Is2D)
+                    BoxState = State.CreateHeight;
+                else //Height creation skip (used for 2D view)
+                {
+                    BoxState = State.None;
+                    Apply();
+                }
             }
             else if (BoxState == State.CreateHeight)
             {
@@ -147,6 +142,21 @@ namespace GLFrameworkEngine
             }
         }
 
+        public void Start()
+        {
+            marker.SetCursor();
+
+            //Previous movement
+            previousPosition = Vector3.Zero;
+            //Total offset to shift corner
+            offset = Vector3.Zero;
+            //Starting position
+            StartPoint = marker.Transform.Position;
+            //Rotation of box
+            //    Rotation = Matrix3.CreateFromQuaternion(marker.Transform.Rotation);
+            //Create X/Z plane first
+            BoxState = State.CreateWidth;
+        }
 
         private void Apply()
         {
@@ -242,7 +252,13 @@ namespace GLFrameworkEngine
                 //Total offset to shift corner height
                 offset = Vector3.Zero;
                 //Height Y plane
-                BoxState = State.CreateHeight;
+                if (!context.Camera.Is2D)
+                    BoxState = State.CreateHeight;
+                else //Height creation skip (used for 2D view)
+                {
+                    BoxState = State.None;
+                    Apply();
+                }
             }
         }
 
