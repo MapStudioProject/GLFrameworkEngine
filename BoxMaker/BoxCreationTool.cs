@@ -142,6 +142,15 @@ namespace GLFrameworkEngine
             }
         }
 
+        public void Reset()
+        {
+            BoxState = State.None;
+            //Previous movement
+            previousPosition = Vector3.Zero;
+            //Total offset to shift corner height
+            offset = Vector3.Zero;
+        }
+
         public void Start()
         {
             marker.SetCursor();
