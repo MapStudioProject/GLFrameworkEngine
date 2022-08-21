@@ -133,9 +133,6 @@ namespace GLFrameworkEngine
                 new Vector2(min.X, max.Y),
             });
 
-            GL.MatrixMode(MatrixMode.Modelview);
-            GL.LoadIdentity();
-
             var mdlMtx = Matrix4.Identity;
 
             SelectionRenderer.DrawFilledMask(context, mdlMtx, Mesh, PrimitiveType.TriangleStrip);

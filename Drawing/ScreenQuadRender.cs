@@ -66,9 +66,6 @@ namespace GLFrameworkEngine
         {
             Init();
 
-            GL.MatrixMode(MatrixMode.Modelview);
-            GL.LoadIdentity();
-
             GL.ActiveTexture(TextureUnit.Texture1);
             GL.BindTexture(TextureTarget.Texture2D, textureID);
             shader.SetInt("screenTexture", 1);
@@ -85,9 +82,6 @@ namespace GLFrameworkEngine
         public static void Draw()
         {
             Init();
-
-            GL.MatrixMode(MatrixMode.Modelview);
-            GL.LoadIdentity();
 
             vao.Enable(null);
             vao.Use();

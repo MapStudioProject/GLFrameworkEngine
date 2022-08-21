@@ -36,6 +36,8 @@ namespace GLFrameworkEngine
         /// </summary>
         public int TextureID = -1;
 
+        public bool XRay = true;
+
         //Default texture to draw as.
         static GLTexture DefaultTexture = null;
 
@@ -63,7 +65,10 @@ namespace GLFrameworkEngine
             Material.DisplaySelection = IsSelected;
             Material.Render(context);
 
-            GL.Disable(EnableCap.DepthTest);
+            if (XRay)
+                GL.Disable(EnableCap.DepthTest);
+
+            GL.DepthMask(false);
             GL.LineWidth(1.5f);
 
             GLMaterialBlendState.Translucent.RenderBlendState();
@@ -73,6 +78,7 @@ namespace GLFrameworkEngine
             GLMaterialBlendState.Opaque.RenderBlendState();
 
             GL.Enable(EnableCap.DepthTest);
+            GL.DepthMask(true);
 
             GL.LineWidth(1);
         }

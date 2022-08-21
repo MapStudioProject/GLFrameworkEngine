@@ -26,7 +26,7 @@ namespace GLFrameworkEngine
         /// <summary>
         /// Toggles visibility of the cursor.
         /// </summary>
-        public bool IsVisible { get; set; } = true;
+        public bool IsVisible { get; set; } = false;
 
         public Cursor3D() : base(GetVertices(60), PrimitiveType.LineLoop)
         {
