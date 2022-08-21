@@ -33,7 +33,7 @@
 
   <ItemGroup>
     <Reference Include="OpenTK">
-      <HintPath>..\Track Studio\Lib\OpenTK.dll</HintPath>
+      <HintPath>Externals\OpenTK.dll</HintPath>
     </Reference>
   </ItemGroup>
  
