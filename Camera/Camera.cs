@@ -1036,7 +1036,14 @@ namespace GLFrameworkEngine
                 }
             }
             //Pan via right click in 2D ortho view when camera is locked
-            if (e.RightButton == ButtonState.Pressed && _camera.IsOrthographic && _camera.LockRotation)
+            if (e.RightButton == ButtonState.Pressed && _camera.Is2D)
+            {
+                //Mouse pan from left click
+                Pan(movement.X * _camera.PanSpeed, movement.Y * _camera.PanSpeed);
+            }
+
+            //3D Pam
+            if (e.LeftButton == ButtonState.Pressed && !_camera.Is2D)
             {
                 //Mouse pan from left click
                 Pan(movement.X * _camera.PanSpeed, movement.Y * _camera.PanSpeed);
