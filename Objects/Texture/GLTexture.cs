@@ -167,8 +167,8 @@ namespace GLFrameworkEngine
             else
             {
                 //Set level to base only
-                GL.TexParameter(Target, TextureParameterName.TextureBaseLevel, 0);
-                GL.TexParameter(Target, TextureParameterName.TextureMaxLevel, 0);
+              //  GL.TexParameter(Target, TextureParameterName.TextureBaseLevel, 0);
+              //  GL.TexParameter(Target, TextureParameterName.TextureMaxLevel, 0);
             }
 
             Unbind();
