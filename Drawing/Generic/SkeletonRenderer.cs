@@ -36,6 +36,8 @@ namespace GLFrameworkEngine
             set { }
         }
 
+        public static bool XRay = false;
+
         /// <summary>
         /// The list of rendered bones.
         /// </summary>
@@ -70,14 +72,7 @@ namespace GLFrameworkEngine
 
         public SkeletonRenderer(STSkeleton skeleton) : base(screenPositions, PrimitiveType.Lines)
         {
-            Reload(skeleton);
-        }
-
-        public void Reload(STSkeleton skeleton)
-        {
             Skeleton = skeleton;
-
-            Bones.Clear();
             foreach (var bone in skeleton.Bones)
                 Bones.Add(new BoneRender(bone));
 
@@ -87,6 +82,11 @@ namespace GLFrameworkEngine
                 var parent = Bones.FirstOrDefault(x => x.BoneData == bone.BoneData.Parent);
                 bone.SetParent(parent);
             }
+        }
+
+        public void Update()
+        {
+            Skeleton.Update();
         }
 
         ShaderProgram ShaderProgram;
@@ -151,7 +151,9 @@ namespace GLFrameworkEngine
 
             control.CurrentShader = ShaderProgram;
             GL.Disable(EnableCap.CullFace);
-            GL.Disable(EnableCap.DepthTest);
+
+            if (XRay)
+                GL.Disable(EnableCap.DepthTest);
 
             ShaderProgram.SetMatrix4x4("rotation", ref prismRotation);
             //Draw connections
