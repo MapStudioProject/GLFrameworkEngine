@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL;
-using System.Drawing;
 using Toolbox.Core;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
+using Toolbox.Core.IO;
 
 namespace GLFrameworkEngine
 {
@@ -123,21 +126,21 @@ namespace GLFrameworkEngine
 
         public static GLTexture2D FromBitmap(string imageFile)
         {
-            Bitmap image = (Bitmap)Bitmap.FromStream(System.IO.File.OpenRead(imageFile));
+            var image = Image.Load<Rgba32>(imageFile);
             return FromBitmap(image);
         }
 
-
         public static GLTexture2D FromBitmap(byte[] imageFile, int width, int height)
         {
-            Bitmap image = (Bitmap)Bitmap.FromStream(new System.IO.MemoryStream(imageFile));
-            image = Toolbox.Core.Imaging.BitmapExtension.Resize(image, width, height);
+            var image = Image.Load<Rgba32>(imageFile);
+            image.Mutate(x => x.Resize(width, height));
             return FromBitmap(image);
         }
 
         public static GLTexture2D FromBitmap(byte[] imageFile, bool isLinear = true)
         {
-            Bitmap image =  (Bitmap)Bitmap.FromStream(new System.IO.MemoryStream(imageFile));
+            var image = Image.Load<Rgba32>(imageFile);
+
 
             GLTexture2D texture = new GLTexture2D();
             texture.Target = TextureTarget.Texture2D;
@@ -160,7 +163,7 @@ namespace GLFrameworkEngine
             return texture;
         }
 
-        public static GLTexture2D FromBitmap(Bitmap image)
+        public static GLTexture2D FromBitmap(Image<Rgba32> image)
         {
             GLTexture2D texture = new GLTexture2D();
             texture.Target = TextureTarget.Texture2D;
@@ -169,17 +172,14 @@ namespace GLFrameworkEngine
             return texture;
         }
 
-        public void LoadImage(Bitmap image)
+        public void LoadImage(Image<Rgba32> image)
         {
             Bind();
 
-            System.Drawing.Imaging.BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
-              System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            var rgba = image.GetSourceInBytes();
 
-            GL.TexImage2D(Target, 0, PixelInternalFormat.Rgba, data.Width, data.Height, 0,
-                PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
-
-            image.UnlockBits(data);
+            GL.TexImage2D(Target, 0, PixelInternalFormat.Rgba, image.Width, image.Height, 0,
+                PixelFormat.Bgra, PixelType.UnsignedByte, rgba);
 
             image.Dispose();
 

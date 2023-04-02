@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Drawing.Imaging;
-using System.Drawing;
 using OpenTK.Graphics.OpenGL;
 
 namespace GLFrameworkEngine
@@ -64,27 +62,6 @@ namespace GLFrameworkEngine
                         LoadImageCubemap2D(mipLevel, i, width, height, format, data[i]);
                     break;
             }
-        }
-
-        public static void LoadImage(TextureTarget target, int width, int height,
-               int depth, GLFormatHelper.PixelFormatInfo format, Bitmap bitmap, int mipLevel = 0)
-        {
-            BitmapData data = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
-           ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-            switch (target)
-            {
-                case TextureTarget.Texture2D:
-                    LoadImage2D(mipLevel, width, height, format, data.Scan0);
-                    break;
-                case TextureTarget.Texture2DArray:
-                case TextureTarget.Texture3D:
-                case TextureTarget.TextureCubeMapArray:
-                    LoadImage3D(target, mipLevel, depth, width, height, format, data.Scan0);
-                    break;
-            }
-
-            bitmap.UnlockBits(data);
         }
 
         static void LoadCompressedImage2D(int mipLevel, int width, int height, InternalFormat format, byte[] data)

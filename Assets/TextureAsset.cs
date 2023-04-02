@@ -48,13 +48,11 @@ namespace GLFrameworkEngine
             GL.BindTexture(TextureTarget.Texture2D, 0);
 
             var thumbnail = frameBuffer.ReadImagePixels(true);
-            thumbnail.RotateFlip(System.Drawing.RotateFlipType.RotateNoneFlipY);
 
             //Dispose frame buffer
             frameBuffer.Dispose();
             frameBuffer.DisposeRenderBuffer();
 
-            this.Thumbnail = thumbnail;
             thumbnailUpdate?.Invoke(this, EventArgs.Empty);
         }
     }

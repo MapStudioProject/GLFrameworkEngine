@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Drawing;
 using System.Runtime.InteropServices;
 using OpenTK.Graphics.OpenGL;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 
 namespace GLFrameworkEngine
 {
@@ -18,14 +20,13 @@ namespace GLFrameworkEngine
             byte[] pixels = ReadPixels(Width, Height, imageSize, bufferMode, saveAlpha);
             var bitmap = GetBitmap(Width, Height, pixels);
 
-            // Adjust for differences in the origin point.
-            var data =  Toolbox.Core.Imaging.BitmapExtension.ImageToByte(bitmap);
+            var data = bitmap.GetSourceInBytes();
             bitmap.Dispose();
 
             return data;
         }
 
-        public System.Drawing.Bitmap ReadImagePixels(bool saveAlpha = false, ReadBufferMode bufferMode = ReadBufferMode.ColorAttachment0)
+        public  Image<Rgba32> ReadImagePixels(bool saveAlpha = false, ReadBufferMode bufferMode = ReadBufferMode.ColorAttachment0)
         {
             int imageSize = Width * Height * 4;
 
@@ -34,7 +35,8 @@ namespace GLFrameworkEngine
             var bitmap = GetBitmap(Width, Height, pixels);
 
             // Adjust for differences in the origin point.
-            bitmap.RotateFlip(System.Drawing.RotateFlipType.RotateNoneFlipY);
+            bitmap.Mutate(x => x.RotateFlip(RotateMode.None, FlipMode.Vertical));
+
             return bitmap;
         }
 
@@ -64,15 +66,9 @@ namespace GLFrameworkEngine
             }
         }
 
-        public static Bitmap GetBitmap(int width, int height, byte[] imageData)
+        public static Image<Rgba32> GetBitmap(int width, int height, byte[] imageData)
         {
-            Bitmap bmp = new Bitmap(width, height,  System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-            System.Drawing.Imaging.BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0, width, height), System.Drawing.Imaging.ImageLockMode.WriteOnly, bmp.PixelFormat);
-            Marshal.Copy(imageData, 0, bmpData.Scan0, imageData.Length);
-
-            bmp.UnlockBits(bmpData);
-            return bmp;
+            return Image.LoadPixelData<Rgba32>(imageData, width, height);
         }
     }
 }

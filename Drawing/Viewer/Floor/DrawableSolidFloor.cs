@@ -38,7 +38,7 @@ namespace GLFrameworkEngine
 
         public void SetImage(string filePath) {
             if (System.IO.File.Exists(filePath))
-                Texture = GLTexture2D.FromBitmap(new Bitmap(filePath));
+                Texture = GLTexture2D.FromBitmap(filePath);
         }
 
         public void Draw(GLContext control, Pass pass)

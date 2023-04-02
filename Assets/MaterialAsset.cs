@@ -93,13 +93,10 @@ namespace GLFrameworkEngine
             GL.UseProgram(0);
             GL.BindTexture(TextureTarget.Texture2D, 0);
 
-            var thumbnail = frameBuffer.ReadImagePixels(true);
-
             //Dispose frame buffer
             frameBuffer.Dispose();
             frameBuffer.DisposeRenderBuffer();
 
-            this.Thumbnail = thumbnail;
             thumbnailUpdated?.Invoke(this, EventArgs.Empty);
         }
 
