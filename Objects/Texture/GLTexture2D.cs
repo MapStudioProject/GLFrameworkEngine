@@ -8,6 +8,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using Toolbox.Core.IO;
+using Toolbox.Core.Imaging;
 
 namespace GLFrameworkEngine
 {
@@ -179,7 +180,7 @@ namespace GLFrameworkEngine
             var rgba = image.GetSourceInBytes();
 
             GL.TexImage2D(Target, 0, PixelInternalFormat.Rgba, image.Width, image.Height, 0,
-                PixelFormat.Bgra, PixelType.UnsignedByte, rgba);
+                PixelFormat.Rgba, PixelType.UnsignedByte, rgba);
 
             image.Dispose();
 
