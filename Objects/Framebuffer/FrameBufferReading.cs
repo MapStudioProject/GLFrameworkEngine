@@ -7,6 +7,7 @@ using OpenTK.Graphics.OpenGL;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using Toolbox.Core.Imaging;
 
 namespace GLFrameworkEngine
 {
@@ -68,6 +69,7 @@ namespace GLFrameworkEngine
 
         public static Image<Rgba32> GetBitmap(int width, int height, byte[] imageData)
         {
+            BitmapExtension.ConvertBgraToRgba(imageData);
             return Image.LoadPixelData<Rgba32>(imageData, width, height);
         }
     }
