@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL;
-using System.Drawing;
 using Toolbox.Core;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace GLFrameworkEngine
 {
@@ -281,7 +282,7 @@ namespace GLFrameworkEngine
             return texture;
         }
 
-        public static GLTexture2DArray FromBitmap(Bitmap image)
+        public static GLTexture2DArray FromBitmap(Image<Rgba32> image)
         {
             GLTexture2DArray texture = new GLTexture2DArray();
             texture.Width = image.Width; texture.Height = image.Height;
@@ -316,42 +317,14 @@ namespace GLFrameworkEngine
             }
         }
 
-        public void InsertImage(byte[] buffer, int level = 0)
+        public void LoadImage(Image<Rgba32> image, int level = 0, int count = 1)
         {
             Bind();
 
-            GL.TexSubImage3D(Target, 0, 0, 0, level, this.Width, this.Height, 1,
-                   this.PixelFormat, this.PixelType, buffer);
+            var rgba = image.GetSourceInBytes();
 
-            Unbind();
-        }
-
-        public void InsertImage(Bitmap image, int level = 0)
-        {
-            Bind();
-
-            System.Drawing.Imaging.BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
-              System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-            GL.TexSubImage3D(Target, 0, 0, 0, level, this.Width, this.Height, 1,
-                this.PixelFormat, this.PixelType, data.Scan0);
-
-            image.UnlockBits(data);
-
-            Unbind();
-        }
-
-        public void LoadImage(Bitmap image, int level = 0, int count = 1)
-        {
-            Bind();
-
-            System.Drawing.Imaging.BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
-              System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-            GL.TexImage3D(Target, level, PixelInternalFormat.Rgba, data.Width, data.Height, count, 0,
-                  OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
-
-            image.UnlockBits(data);
+            GL.TexImage3D(Target, level, PixelInternalFormat.Rgba, image.Width, image.Height, count, 0,
+                  OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, rgba);
 
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2DArray);
 
@@ -372,7 +345,7 @@ namespace GLFrameworkEngine
         {
             var stream = new System.IO.MemoryStream();
             var bmp = ToBitmap(saveAlpha);
-            bmp.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+            bmp.SaveAsPng(stream);
             return stream;
         }
 
@@ -385,7 +358,7 @@ namespace GLFrameworkEngine
                 GL.GetTextureSubImage(this.ID, 0, 0, 0, i, Width, Height, 1,
                     PixelFormat.Bgra, PixelType.UnsignedByte, output.Length, output);
 
-                var bitmap = BitmapImageHelper.CreateBitmap(output, Width, Height);
+                var bitmap = Image.LoadPixelData<Rgba32>(output, Width, Height);
                 bitmap.Save(fileName + $"_{i}.png");
             }
             Unbind();

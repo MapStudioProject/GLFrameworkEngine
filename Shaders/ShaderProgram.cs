@@ -227,12 +227,6 @@ namespace GLFrameworkEngine
                 GL.Uniform1(this[name], 0);
         }
 
-        public void SetColor(string name, System.Drawing.Color color)
-        {
-            if (uniforms.ContainsKey(name))
-                GL.Uniform4(uniforms[name], color.R, color.G, color.B, color.A);
-        }
-
         public void SetMatrix4x4(string name, ref Matrix4 value, bool transpose = false)
         {
             if (uniforms.ContainsKey(name))

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL;
-using System.Drawing;
 using Toolbox.Core;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace GLFrameworkEngine
 {
@@ -60,17 +62,19 @@ namespace GLFrameworkEngine
             Unbind();
         }
 
-        public override System.Drawing.Bitmap ToBitmap(bool saveAlpha = true)
+        public override Image<Rgba32> ToBitmap(bool saveAlpha = true)
         {
             Bind();
 
             byte[] data = new byte[Width * Height * Depth * 4];
             GL.GetTexImage(Target, 0, PixelFormat.Bgra, PixelType.UnsignedByte, data);
 
+            var image = Image.LoadPixelData<Rgba32>(data, Width * Depth, Height);
+            image.Mutate(x => x.RotateFlip(RotateMode.None, FlipMode.Vertical));
+
             Unbind();
 
-            return Toolbox.Core.Imaging.BitmapExtension.CreateBitmap(
-                data, Width * Depth, Height);
+            return image;
         }
     }
 }

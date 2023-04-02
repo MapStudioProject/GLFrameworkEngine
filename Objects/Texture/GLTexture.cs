@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp;
 using Toolbox.Core;
 
 namespace GLFrameworkEngine
@@ -194,7 +196,7 @@ namespace GLFrameworkEngine
             return IsPow2(width) && IsPow2(height);
         }
 
-        public virtual System.Drawing.Bitmap ToBitmap(bool saveAlpha = false)
+        public virtual Image<Rgba32> ToBitmap(bool saveAlpha = true)
         {
             return null;
         }

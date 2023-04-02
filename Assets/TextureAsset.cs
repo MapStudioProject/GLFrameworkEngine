@@ -17,14 +17,6 @@ namespace GLFrameworkEngine
         /// </summary>
         public GLTexture RenderableTex { get; set; }
 
-        public static System.Drawing.Bitmap CreateTextureRender(GLContext control, GLTexture renderableTex, int width = 50, int height = 50)
-        {
-            TextureAsset texture = new TextureAsset();
-            texture.RenderableTex = renderableTex;
-            texture.CreateTextureRender(control, null, width, height);
-            return texture.Thumbnail;
-        }
-
         public void CreateTextureRender(GLContext control, EventHandler thumbnailUpdate, int width = 50, int height = 50)
         {
             var shader = GlobalShaders.GetShader("SCREEN");

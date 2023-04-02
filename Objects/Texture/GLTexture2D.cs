@@ -212,7 +212,7 @@ namespace GLFrameworkEngine
         {
             var stream = new System.IO.MemoryStream();
             var bmp = ToBitmap(saveAlpha);
-            bmp.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+            bmp.SaveAsPng(stream);
             return stream;
         }
 
@@ -282,28 +282,20 @@ namespace GLFrameworkEngine
             Unbind();
         }
 
-        public override System.Drawing.Bitmap ToBitmap(bool saveAlpha = true)
+        public override Image<Rgba32> ToBitmap(bool saveAlpha = true)
         {
             Bind();
 
-            var bmp = new System.Drawing.Bitmap(Width, Height);
+            byte[] data = new byte[Width * Height * 4];
 
-            System.Drawing.Imaging.BitmapData data =
-                bmp.LockBits(new System.Drawing.Rectangle(0, 0, Width, Height),
-                System.Drawing.Imaging.ImageLockMode.WriteOnly,
-                saveAlpha ?
-                System.Drawing.Imaging.PixelFormat.Format32bppArgb
-                :
-                 System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            GL.ReadPixels(0, 0, Width, Height, saveAlpha ? PixelFormat.Bgra : PixelFormat.Bgr, PixelType.UnsignedByte, data);
 
-            GL.ReadPixels(0, 0, Width, Height, saveAlpha ? PixelFormat.Bgra : PixelFormat.Bgr, PixelType.UnsignedByte, data.Scan0);
-            bmp.UnlockBits(data);
-
-            bmp.RotateFlip(System.Drawing.RotateFlipType.RotateNoneFlipY);
+            var image = Image.LoadPixelData<Rgba32>(data, Width, Height);
+            image.Mutate(x => x.RotateFlip(RotateMode.None, FlipMode.Vertical));
 
             Unbind();
 
-            return bmp;
+            return image;
         }
     }
 }

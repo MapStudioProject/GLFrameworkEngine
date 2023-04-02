@@ -19,7 +19,7 @@ namespace GLFrameworkEngine
         public int X => Position.X;
         public int Y => Position.Y;
 
-        public System.Drawing.Point Position { get; set; }
+        public Point Position { get; set; }
 
         public static Vector2 FullPosition { get; set; }
         public static Vector2 PreviousPosition { get; set; }

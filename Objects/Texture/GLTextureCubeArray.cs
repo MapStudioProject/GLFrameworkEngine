@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using Toolbox.Core;
 
 namespace GLFrameworkEngine
@@ -168,8 +170,8 @@ namespace GLFrameworkEngine
                 //Remove alpha
                 output = SetImageData(output, true, true);
 
-                var bitmap = BitmapImageHelper.CreateBitmap(output, Width, Height);
-                bitmap.Save(fileName + $"_{i}.png");
+                var bitmap = Image.LoadPixelData<Rgba32>(output, Width, Height);
+                bitmap.SaveAsPng(fileName + $"_{i}.png");
             }
             Unbind();
         }

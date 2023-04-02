@@ -316,7 +316,7 @@ namespace GLFrameworkEngine
             if (mouseDown)
             {
                 if (!e.HasValue)
-                    e.Position = new System.Drawing.Point((int)_previousPosition.X, (int)_previousPosition.Y);
+                    e.Position = new Point((int)_previousPosition.X, (int)_previousPosition.Y);
 
                 if (transformState != 0 || SelectionTools.IsActive || LinkingTools.IsActive || DisableCameraMovement)
                     return;

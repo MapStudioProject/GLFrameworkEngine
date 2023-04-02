@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using Toolbox.Core;
 
 namespace GLFrameworkEngine
@@ -258,8 +260,8 @@ namespace GLFrameworkEngine
             Bind();
 
             var decomp = GetDecompressedRawImageData(0);
-            var bitmap = BitmapImageHelper.CreateBitmap(decomp, Width, Height * 6);
-            bitmap.Save(fileName);
+            var bitmap = Image.LoadPixelData<Rgba32>(decomp, Width, Height * 6);
+            bitmap.SaveAsPng(fileName);
 
             Unbind();
         }

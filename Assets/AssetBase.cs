@@ -12,9 +12,6 @@ namespace GLFrameworkEngine
         public virtual string Name { get; set; }
 
         [NonSerialized]
-        public System.Drawing.Bitmap Thumbnail;
-
-        [NonSerialized]
         public EventHandler ThumbnailUpdated;
 
         public virtual void Draw(GLContext control)
