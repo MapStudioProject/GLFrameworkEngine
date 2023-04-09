@@ -33,7 +33,6 @@ namespace GLFrameworkEngine
 
         public ShadowMainRenderer() {
             shadowBox = new ShadowBox();
-            ShadowFrameBuffer = new ShadowFrameBuffer(WIDTH, HEIGHT);
             ShadowPrepassTexture = GLTexture2D.CreateWhiteTexture(4,4);
         }
 
@@ -47,7 +46,7 @@ namespace GLFrameworkEngine
         /// Gets the projected cascaded shadow map generated from the shadow renderer.
         /// </summary>
         /// <returns></returns>
-        public DepthTexture GetProjectedShadow() => ShadowFrameBuffer.GetShadowTexture();
+        public DepthTexture GetProjectedShadow() => ShadowFrameBuffer?.GetShadowTexture();
 
         /// <summary>
         /// Gets the light space shadow matrix used to project shadows into.
@@ -65,6 +64,9 @@ namespace GLFrameworkEngine
 
         public void Render(GLContext context, Vector3 lightDirection)
         {
+            if (ShadowFrameBuffer == null)
+                ShadowFrameBuffer = new ShadowFrameBuffer(WIDTH, HEIGHT);
+
             //Reset draw call stats
             ResourceTracker.NumShadowDrawCalls = 0;
 
