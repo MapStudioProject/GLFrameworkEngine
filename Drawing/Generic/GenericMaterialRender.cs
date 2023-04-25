@@ -71,8 +71,7 @@ namespace GLFrameworkEngine
 
             int offset = 0;
             for (int i = 0; i < vertex.TexCoords?.Length; i++)
-                AddAttribute($"vTexCoord{i}", ref offset, 2, bufferIndex);
-            bufferIndex++;
+                AddAttribute($"vTexCoord{i}", 2, bufferIndex++);
 
             if (meshRender.MeshData.Vertices.Any(x => x.BoneIndices.Count > 0))
             {
@@ -99,10 +98,10 @@ namespace GLFrameworkEngine
             //Normals
             var normals = meshRender.MeshData.Vertices.Select(x => x.Normal).ToArray();
             meshRender.Drawer.SetData(normals, bufferIndex++);
-            if (vertex.TexCoords.Length > 0)
+            for (int i = 0; i < vertex.TexCoords?.Length; i++)
             {
                 //TexCoords
-                var texCoords = meshRender.MeshData.Vertices.SelectMany(x => x.TexCoords).ToArray();
+                var texCoords = meshRender.MeshData.Vertices.Select(x => x.TexCoords[i]).ToArray();
                 meshRender.Drawer.SetData(texCoords, bufferIndex++);
             }
             if (meshRender.MeshData.Vertices.Any(x => x.BoneIndices.Count > 0))

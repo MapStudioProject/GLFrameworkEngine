@@ -73,6 +73,11 @@ namespace GLFrameworkEngine
             Reload(skeleton);
         }
 
+        public void Update()
+        {
+            Skeleton.Update();
+        }
+
         public void Reload(STSkeleton skeleton)
         {
             Skeleton = skeleton;
