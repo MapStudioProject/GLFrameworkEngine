@@ -31,7 +31,9 @@ namespace GLFrameworkEngine
             texture.WrapR = TextureWrapMode.ClampToEdge;
             texture.WrapS = TextureWrapMode.ClampToEdge;
             texture.WrapT = TextureWrapMode.ClampToEdge;
-            texture.MinFilter = TextureMinFilter.LinearMipmapLinear;
+            texture.MinFilter = TextureMinFilter.Linear;
+            if (texture.MipCount > 1)
+                texture.MinFilter = TextureMinFilter.LinearMipmapLinear;
             texture.MagFilter = TextureMagFilter.Linear;
             texture.MipCount = numMips;
 

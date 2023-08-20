@@ -36,7 +36,8 @@ namespace GLFrameworkEngine
             Width = width;
             Height = height;
 
-            Attachments = CreateColorAttachments(width, height, colorAttachmentsCount);
+            if (colorAttachmentsCount > 0)
+                Attachments = CreateColorAttachments(width, height, colorAttachmentsCount);
 
             if (useDepth)
                 SetUpRboDepth(width, height);
@@ -80,10 +81,7 @@ namespace GLFrameworkEngine
                 if (attatchment is GLTexture2D)
                 {
                     var tex = (GLTexture2D)attatchment;
-                    tex.Bind();
-                    GL.TexImage2D(tex.Target, 0, tex.PixelInternalFormat,
-                        Width, Height, 0, tex.PixelFormat, tex.PixelType, IntPtr.Zero);
-                    tex.Unbind();
+                    tex.Resize(Width, height);
                 }
                 else if (attatchment is DepthTexture)
                 {

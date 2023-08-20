@@ -143,7 +143,7 @@ namespace GLFrameworkEngine
             return vertices.ToArray();
         }
 
-        public static VertexPositionNormal[] GetCylinderVertices(float radius, float height, float slices)
+        public static VertexPositionNormal[] GetCylinderVertices(float radius, float startHeight, float height, float slices)
         {
             List<VertexPositionNormal> vertices = new List<VertexPositionNormal>();
 
@@ -156,7 +156,7 @@ namespace GLFrameworkEngine
             {
                 float x = radius * (float)Math.Cos(MathHelper.DegreesToRadians(angle));
                 float z = radius * (float)Math.Sin(MathHelper.DegreesToRadians(angle));
-                discPointsBottom.Add(new Vector3(x, 0, z));
+                discPointsBottom.Add(new Vector3(x, startHeight, z));
 
                 x = radius * (float)Math.Cos(MathHelper.DegreesToRadians(angle));
                 z = radius * (float)Math.Sin(MathHelper.DegreesToRadians(angle));
@@ -170,9 +170,9 @@ namespace GLFrameworkEngine
                 Vector3 p2 = discPointsBottom[i];
                 Vector3 p1 = new Vector3(discPointsBottom[(i + 1) % discPointsBottom.Count]);
 
-                vertices.Add(new VertexPositionNormal() { Position = new Vector3(0, 0, 0) });
-                vertices.Add(new VertexPositionNormal() { Position = new Vector3(p2.X, 0, p2.Z) });
-                vertices.Add(new VertexPositionNormal() { Position = new Vector3(p1.X, 0, p1.Z) });
+                vertices.Add(new VertexPositionNormal() { Position = new Vector3(0, startHeight, 0) });
+                vertices.Add(new VertexPositionNormal() { Position = new Vector3(p2.X, startHeight, p2.Z) });
+                vertices.Add(new VertexPositionNormal() { Position = new Vector3(p1.X, startHeight, p1.Z) });
 
                 p2 = discPointsTop[i % discPointsTop.Count];
                 p1 = discPointsTop[(i + 1) % discPointsTop.Count];
@@ -201,7 +201,7 @@ namespace GLFrameworkEngine
             return vertices.ToArray();
         }
 
-        public static VertexPositionNormal[] GetConeVertices(float radiusBottom, float radiusTop, float height, float slices)
+        public static VertexPositionNormal[] GetConeVertices(float radiusBottom, float radiusTop, float height, float slices, float startHeight = 0)
         {
             List<VertexPositionNormal> vertices = new List<VertexPositionNormal>();
 
@@ -214,7 +214,7 @@ namespace GLFrameworkEngine
             {
                 float x = radiusBottom * (float)Math.Cos(MathHelper.DegreesToRadians(angle));
                 float z = radiusBottom * (float)Math.Sin(MathHelper.DegreesToRadians(angle));
-                discPointsBottom.Add(new Vector3(x, 0, z));
+                discPointsBottom.Add(new Vector3(x, startHeight, z));
 
                 x = radiusTop * (float)Math.Cos(MathHelper.DegreesToRadians(angle));
                 z = radiusTop * (float)Math.Sin(MathHelper.DegreesToRadians(angle));
@@ -228,9 +228,9 @@ namespace GLFrameworkEngine
                 Vector3 p2 = discPointsBottom[i];
                 Vector3 p1 = new Vector3(discPointsBottom[(i + 1) % discPointsBottom.Count]);
 
-                vertices.Add(new VertexPositionNormal() { Position = new Vector3(0, 0, 0) });
-                vertices.Add(new VertexPositionNormal() { Position = new Vector3(p2.X, 0, p2.Z) });
-                vertices.Add(new VertexPositionNormal() { Position = new Vector3(p1.X, 0, p1.Z) });
+                vertices.Add(new VertexPositionNormal() { Position = new Vector3(0, startHeight, 0) });
+                vertices.Add(new VertexPositionNormal() { Position = new Vector3(p2.X, startHeight, p2.Z) });
+                vertices.Add(new VertexPositionNormal() { Position = new Vector3(p1.X, startHeight, p1.Z) });
 
                 p2 = discPointsTop[i % discPointsTop.Count];
                 p1 = discPointsTop[(i + 1) % discPointsTop.Count];
@@ -316,6 +316,30 @@ namespace GLFrameworkEngine
                 normals[i + 0] = normal;
                 normals[i + 1] = normal;
                 normals[i + 2] = normal;
+            }
+            return normals;
+        }
+
+        public static Vector3[] CalculateNormals(List<Vector3> positions, List<int> indices)
+        {
+            Vector3[] normals = new Vector3[positions.Count];
+            for (int i = 0; i < indices.Count; i += 3)
+            {
+                if (i + 3 >= indices.Count)
+                    break;
+
+                var v1 = positions[indices[i + 0]];
+                var v2 = positions[indices[i + 1]];
+                var v3 = positions[indices[i + 2]];
+
+                var v1to2 = v2 - v1;
+                var v1to3 = v3 - v1;
+
+                var normal = Vector3.Cross(v1to2, v1to3).Normalized();
+
+                normals[indices[i + 0]] = normal;
+                normals[indices[i + 1]] = normal;
+                normals[indices[i + 2]] = normal;
             }
             return normals;
         }

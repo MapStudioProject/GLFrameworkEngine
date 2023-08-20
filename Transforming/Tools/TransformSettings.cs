@@ -7,6 +7,11 @@ namespace GLFrameworkEngine
 {
     public class TransformSettings
     {
+        public bool UseX = true;
+        public bool UseY = true;
+        public bool UseZ = true;
+
+
         /// <summary>
         /// The initial gizmo size before being scaled by the camera distance.
         /// </summary>

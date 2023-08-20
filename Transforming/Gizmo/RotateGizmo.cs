@@ -96,13 +96,13 @@ namespace GLFrameworkEngine
 
         void Init()
         {
-            CylinderRenderer = new CylinderRenderer(0.04f, 2);
+            CylinderRenderer = new CylinderRenderer(0.04f, 0, 2);
             CircleRenderer = new Circle2DRenderer(64);
             CircleChangeSegmentRenderer = new Circle2DRenderer(32, PrimitiveType.TriangleFan);
             SphereRender = new SphereRender(1, 32, 32);
         }
 
-        public void Render(GLContext context, Vector3 position, Quaternion rotation, float scale, bool isMoving, bool[] isSelected, bool[] isHovered)
+        public void Render(GLContext context, Vector3 position, Quaternion rotation, float scale, bool isMoving, bool[] display, bool[] isSelected, bool[] isHovered)
         {
             if (CylinderRenderer == null)
                 Init();
@@ -141,7 +141,7 @@ namespace GLFrameworkEngine
 
                 for (int i = 0; i < 3; i++)
                 {
-                    if (isMoving && !isSelected[i])
+                    if (isMoving && !isSelected[i] || !display[i])
                         continue;
 
                     DrawAxis(context, i, isMoving && isSelected[i], isHovered[i], ref transform, _rotations[i], _colors[i]);

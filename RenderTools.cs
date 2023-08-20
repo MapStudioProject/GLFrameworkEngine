@@ -35,8 +35,8 @@ namespace GLFrameworkEngine
             uvTestPattern = GLTexture2D.FromBitmap(Properties.Resources.UVPattern);
             boneWeightGradient = GLTexture2D.FromBitmap(Properties.Resources.boneWeightGradient);
             boneWeightGradient2 = GLTexture2D.FromBitmap(Properties.Resources.boneWeightGradient2);
-            blackTex = GLTexture2D.CreateConstantColorTexture(4, 4, 0, 0, 0, 1);
-            whiteTex = GLTexture2D.CreateConstantColorTexture(4, 4, 0, 0, 0, 1);
+            blackTex = GLTexture2D.CreateConstantColorTexture(4, 4, 0, 0, 0, 255);
+            whiteTex = GLTexture2D.CreateConstantColorTexture(4, 4, 255, 255, 255, 255);
 
             defaultTex.Bind();
             defaultTex.WrapS = TextureWrapMode.Repeat;

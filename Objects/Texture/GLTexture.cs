@@ -6,6 +6,8 @@ using OpenTK.Graphics.OpenGL;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp;
 using Toolbox.Core;
+using static System.Net.Mime.MediaTypeNames;
+using static Toolbox.Core.STGenericTexture;
 
 namespace GLFrameworkEngine
 {
@@ -44,6 +46,7 @@ namespace GLFrameworkEngine
 
         public GLTexture() : base(GL.GenTexture())
         {
+            Bind();
             Target = TextureTarget.Texture2D;
             WrapS = TextureWrapMode.ClampToEdge;
             WrapT = TextureWrapMode.ClampToEdge;
@@ -57,6 +60,40 @@ namespace GLFrameworkEngine
             GL.TexParameter(Target, TextureParameterName.TextureMaxLod, 14);
 
             UpdateParameters();
+
+            Unbind();
+        }
+
+        public void Clear()
+        {
+            GL.ClearTexImage(ID, 0, this.PixelFormat, this.PixelType, 0);
+        }
+
+        public void SetFilter(TextureMinFilter minFilter, TextureMagFilter magFilter)
+        {
+            GL.TexParameter(Target, TextureParameterName.TextureMinFilter, (int)minFilter);
+            GL.TexParameter(Target, TextureParameterName.TextureMagFilter, (int)magFilter);
+        }
+
+        public void MipRange(int min, int max, float lod = 0)
+        {
+            GL.TexParameter(Target, TextureParameterName.TextureLodBias, lod);
+            GL.TexParameter(Target, TextureParameterName.TextureMinLod, min);
+            GL.TexParameter(Target, TextureParameterName.TextureMaxLod, max);
+        }
+
+        public byte[] GetBytes(int level = 0)
+        {
+            int mipWidth = (int)(Width * Math.Pow(0.5, level));
+            int mipHeight = (int)(Height * Math.Pow(0.5, level));
+
+            byte[] outputRaw = new byte[mipWidth * mipHeight * 4];
+
+            Bind();
+            GL.GetTexImage(this.Target, level,
+              PixelFormat.Rgba, PixelType.UnsignedByte, outputRaw);
+
+            return outputRaw;
         }
 
         public void GenerateMipmaps() {
@@ -107,6 +144,8 @@ namespace GLFrameworkEngine
                     return GLTexture3D.FromGeneric(texture, parameters);
                 case STSurfaceType.TextureCube:
                     return GLTextureCube.FromGeneric(texture, parameters);
+                case STSurfaceType.TextureCube_Array:
+                    return GLTextureCubeArray.FromGeneric(texture, parameters);
                 default:
                     return GLTexture2D.FromGeneric(texture, parameters);
             }
@@ -136,11 +175,8 @@ namespace GLFrameworkEngine
             if (texture.IsASTC() || parameters.FlipY)
                 loadAsBitmap = true;
 
-            int numMips = 1;
-            for (int mipLevel = 0; mipLevel < numMips; mipLevel++)
+            void PushImageData(byte[] surface, int mipLevel, int depthLevel)
             {
-                var surface = GetTextureBuffer(texture, mipLevel);
-
                 if (loadAsBitmap || parameters.UseSoftwareDecoder)
                 {
                     var rgbaData = texture.GetDecodedSurface(0, mipLevel);
@@ -150,17 +186,38 @@ namespace GLFrameworkEngine
                     var formatInfo = GLFormatHelper.ConvertPixelFormat(TexFormat.RGBA8_UNORM);
                     if (texture.IsSRGB) formatInfo.InternalFormat = PixelInternalFormat.Srgb8Alpha8;
 
-                    GLTextureDataLoader.LoadImage(Target, width, height, depth, formatInfo, rgbaData, mipLevel);
+                    if (loadAsBitmap)
+                        formatInfo.Format = PixelFormat.Bgra;
+
+                    GLTextureDataLoader.LoadImage(Target, width, height, depthLevel, formatInfo, rgbaData, mipLevel);
                 }
                 else if (texture.IsBCNCompressed())
                 {
                     var internalFormat = GLFormatHelper.ConvertCompressedFormat(format, true);
-                    GLTextureDataLoader.LoadCompressedImage(Target, width, height, depth, internalFormat, surface, mipLevel);
+                    GLTextureDataLoader.LoadCompressedImage(Target, width, height, depthLevel, internalFormat, surface, mipLevel);
                 }
                 else
                 {
                     var formatInfo = GLFormatHelper.ConvertPixelFormat(format);
-                    GLTextureDataLoader.LoadImage(Target, width, height, depth, formatInfo, surface, mipLevel);
+                    GLTextureDataLoader.LoadImage(Target, width, height, depthLevel, formatInfo, surface, mipLevel);
+                }
+            }
+
+            int numMips = 1;
+            for (int mipLevel = 0; mipLevel < numMips; mipLevel++)
+            {
+                if (this.Target == TextureTarget.TextureCubeMap)
+                {
+                    for (int j = 0; j < texture.ArrayCount; j++)
+                    {
+                        var data = texture.GetDeswizzledSurface(j, mipLevel);
+                        PushImageData(data, mipLevel, j);
+                    }
+                }
+                else
+                {
+                    var surface = GetTextureBuffer(texture, mipLevel);
+                    PushImageData(surface, mipLevel, depth);
                 }
             }
 

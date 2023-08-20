@@ -127,7 +127,7 @@ namespace GLFrameworkEngine
             PlaneRender = new PlaneRenderer(1);
             PlaneLinesRender = new PlaneRenderer(1, PrimitiveType.LineLoop);
             ConeRenderer = new ConeRenderer(0.25f, 0, 1);
-            CylinderRenderer = new CylinderRenderer(0.04f, 2);
+            CylinderRenderer = new CylinderRenderer(0.04f, 0, 2);
             GlobalShaders.GetShader("GIZMO");
         }
 
@@ -182,7 +182,7 @@ namespace GLFrameworkEngine
             return axis;
         }
 
-        public void Render(GLContext context, Vector3 position, Quaternion rotation, float scale, bool isMoving, bool[] isSelected, bool[] isHovered) {
+        public void Render(GLContext context, Vector3 position, Quaternion rotation, float scale, bool isMoving, bool[] display, bool[] isSelected, bool[] isHovered) {
             if (ConeRenderer == null)
                 Init();
 
@@ -198,10 +198,20 @@ namespace GLFrameworkEngine
 
             if (!isMoving && !isSelected.Any(x => x)) {
                 for (int i = 0; i < 3; i++) {
-                    DrawAxis(context, isHovered[i], ref transform, _endPostions[i], _rotations[i], _colors[i]);
+                    if (display[i])
+                        DrawAxis(context, isHovered[i], ref transform, _endPostions[i], _rotations[i], _colors[i]);
                 }
                 for (int i = 0; i < 3; i++) {
-                    DrawMultiAxis(context, isHovered[i+3], ref transform, _multiAxisPositions[i], _multiAxisRotations[i], _multiAxisColors[i]);
+
+                    if (i == 0 && (!display[0] || !display[1])) //xy
+                        continue;
+                    if (i == 1 && (!display[1] || !display[2])) //yz
+                        continue;
+                    if (i == 2 && (!display[0] || !display[2])) //xz
+                        continue;
+
+                    if (display[i])
+                        DrawMultiAxis(context, isHovered[i+3], ref transform, _multiAxisPositions[i], _multiAxisRotations[i], _multiAxisColors[i]);
                 }
                 
                 Vector4 color = new Vector4(1);

@@ -263,6 +263,11 @@ namespace GLFrameworkEngine
             BoundingBoxRender.Draw(context, Min, Max);
         }
 
+        public void DrawPicking(GLContext context, TransformableObject obj)
+        {
+            BoundingBoxRender.DrawPicking(context, Min, Max, obj);
+        }
+
         /// <summary>
         /// Creates a bounding box from a min and max vertex point.
         /// </summary>

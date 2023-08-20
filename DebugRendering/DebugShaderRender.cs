@@ -44,7 +44,7 @@ namespace GLFrameworkEngine
             debugShader.SetInt("weightRampType", 2);
             debugShader.SetInt("selectedBoneIndex", Runtime.SelectedBoneIndex);
 
-            int slot = 10;
+            int slot = 25;
             debugShader.SetTexture(RenderTools.uvTestPattern, "UVTestPattern", slot++);
             debugShader.SetTexture(RenderTools.boneWeightGradient, "weightRamp1", slot++);
             debugShader.SetTexture(RenderTools.boneWeightGradient2, "weightRamp2", slot++);

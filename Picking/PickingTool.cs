@@ -92,19 +92,20 @@ namespace GLFrameworkEngine
 
             Vector2 position = new Vector2(e.Position.X, context.Height - e.Position.Y);
             var pickable = (ITransformableObject)context.Scene.FindPickableAtPosition(context, position);
-            if (pickable != null && pickable.CanSelect)
+            if (pickable != null)
             {
                 pickable.IsHovered = true;
-                if (selectAction)
+                if (selectAction && pickable.CanSelect)
                 {
                     pickable.IsSelected = true;
-                    OnObjectPicked?.Invoke(pickable, EventArgs.Empty);
                 }
+                OnObjectPicked?.Invoke(pickable, EventArgs.Empty);
             }
 
             if (selectAction)
             {
-                context.Scene.OnSelectionChanged(context, pickable);
+                if (!(pickable != null && !pickable.CanSelect))
+                    context.Scene.OnSelectionChanged(context, pickable);
 
                 //Update the transform handler 
                 if (context.TransformTools.ActiveActions.Count > 0)

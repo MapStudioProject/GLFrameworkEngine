@@ -45,6 +45,8 @@ namespace GLFrameworkEngine
         public EventHandler SelectionUIChanged;
         public EventHandler SelectionTransformableChanged;
 
+        public bool DisableSelectionEvent = false;
+
         /// <summary>
         /// Gets objects which can be transformed and edited.
         /// </summary>
@@ -132,6 +134,9 @@ namespace GLFrameworkEngine
 
         public void OnSelectionChanged(GLContext context, ITransformableObject pickable)
         {
+            if (DisableSelectionEvent)
+                return;
+
             if (pickable != null && pickable.CanSelect && pickable is IRenderNode)
                 SelectionUIChanged?.Invoke(((IRenderNode)pickable).UINode, EventArgs.Empty);
             if (pickable == null || !pickable.CanSelect)

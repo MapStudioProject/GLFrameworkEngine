@@ -6,6 +6,7 @@ using OpenTK.Graphics.OpenGL;
 using Toolbox.Core;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using System.Net.Mail;
 
 namespace GLFrameworkEngine
 {
@@ -90,6 +91,20 @@ namespace GLFrameworkEngine
             return texture;
         }
 
+        public void Resize(int width, int height)
+        {
+            Width = width;
+            Height = height;
+
+            Bind();
+
+            GL.TexImage3D(Target, 0, PixelInternalFormat,
+                         Width, Height, ArrayCount, 0,
+                           PixelFormat, PixelType, IntPtr.Zero);
+
+            Unbind();
+        }
+
         public static GLTexture2DArray CreateConstantColorTexture(int width, int height, int count, byte R, byte G, byte B, byte A)
         {
             GLTexture2DArray texture = new GLTexture2DArray();
@@ -130,7 +145,7 @@ namespace GLFrameworkEngine
             return glTexture;
         }
 
-        public static GLTexture2DArray FromDDS(DDS dds)
+        public static GLTexture2DArray FromDDS(DDS dds, bool flip = false)
         {
             GLTexture2DArray texture = new GLTexture2DArray();
             texture.Width = (int)dds.Width; texture.Height = (int)dds.Height;
@@ -156,7 +171,7 @@ namespace GLFrameworkEngine
                 for (int i = 0; i < dds.ArrayCount; i++)
                 {
                     var data = dds.GetDecodedSurface(i, j);
-                    if (i == 0 || i == 1)
+                    if (flip)
                         data = FlipHorizontal(mipWidth, mipHeight, data);
 
                     levels.Add(data);
@@ -317,6 +332,41 @@ namespace GLFrameworkEngine
             }
         }
 
+        public void InsertImage<T>(T[] rgba, int level = 0) where T : struct
+        {
+            Bind();
+
+            GL.TexSubImage3D(Target, 0, 0, 0, level, Width, Height, 1,
+                  PixelFormat, PixelType, rgba);
+
+            Unbind();
+        }
+
+        public void InsertImage(byte[] rgba, int level = 0)
+        {
+            Bind();
+
+            GL.TexSubImage3D(Target, 0, 0, 0, level, Width, Height, 1,
+                  OpenTK.Graphics.OpenGL.PixelFormat.Rgba, PixelType.UnsignedByte, rgba);
+
+            Unbind();
+        }
+
+        public void InsertImage(Image<Rgba32> image, int level = 0)
+        {
+            if (image.Width != this.Width || image.Height != this.Height)
+                throw new Exception();
+
+            Bind();
+
+            var rgba = image.GetSourceInBytes();
+
+            GL.TexSubImage3D(Target, 0, 0, 0, level, image.Width, image.Height, 1,
+                 this.PixelFormat, this.PixelType, rgba);
+
+            Unbind();
+        }
+
         public void LoadImage(Image<Rgba32> image, int level = 0, int count = 1)
         {
             Bind();
@@ -324,7 +374,7 @@ namespace GLFrameworkEngine
             var rgba = image.GetSourceInBytes();
 
             GL.TexImage3D(Target, level, PixelInternalFormat.Rgba, image.Width, image.Height, count, 0,
-                  OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, rgba);
+                  OpenTK.Graphics.OpenGL.PixelFormat.Rgba, PixelType.UnsignedByte, rgba);
 
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2DArray);
 
@@ -395,7 +445,7 @@ namespace GLFrameworkEngine
             dds.MainHeader.MipCount = (uint)this.MipCount;
             dds.MainHeader.PitchOrLinearSize = (uint)surfaces[0].mipmaps[0].Length;
 
-            dds.SetFlags(TexFormat.RGBA8_UNORM, false, true);
+            dds.SetFlags(TexFormat.RGBA8_UNORM, ArrayCount > 1, false);
 
             if (dds.IsDX10)
             {
@@ -407,6 +457,8 @@ namespace GLFrameworkEngine
             }
 
             dds.Save(fileName, surfaces);
+
+            surfaces.Clear();
 
             Unbind();
         }

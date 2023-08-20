@@ -29,6 +29,9 @@ namespace GLFrameworkEngine
             ShaderPaths.Add("CUBEMAP_HDRENCODE", Path.Combine("Cubemap","HdrEncode"));
             ShaderPaths.Add("CUBEMAP_HDRDECODE", Path.Combine("Cubemap","HdrDecode"));
             ShaderPaths.Add("EQUIRECTANGULAR", Path.Combine("Cubemap","Equirectangular"));
+            
+            ShaderPaths.Add("CUBEMAP_VIEW", Path.Combine("Cubemap", "CubemapView"));
+            ShaderPaths.Add("CUBEMAP", Path.Combine("Cubemap", "Cubemap"));
             ShaderPaths.Add("CUBEMAP_IRRADIANCE", Path.Combine("Cubemap","Irradiance"));
             ShaderPaths.Add("CUBEMAP_PREFILTER", Path.Combine("Cubemap","Prefilter"));
             ShaderPaths.Add("GIZMO", Path.Combine("Editor","Gizmo"));
@@ -64,6 +67,8 @@ namespace GLFrameworkEngine
             ShaderPaths.Add("IRRADIANCE_CUBEMAP", Path.Combine("IrradianceCubemap"));
             ShaderPaths.Add("LUT_DISPLAY", Path.Combine("LUT","LutDisplay"));
             ShaderPaths.Add("WIREFRAME", Path.Combine("Wireframe","Wireframe"));
+            ShaderPaths.Add("TEXTURE_ARRAY", Path.Combine("Texture", "TextureArray"));
+            ShaderPaths.Add("TEXTURE", Path.Combine("Texture", "Texture"));
         }
 
         public static void AddShader(string key, string relativePath) {
@@ -77,6 +82,8 @@ namespace GLFrameworkEngine
         public static ShaderProgram GetShader(string key, string path)
         {
             if (!Shaders.ContainsKey(key)) {
+                Console.WriteLine($"Shader {key}");
+
                 Shaders.Add(key, LoadShader(path));
                 Shaders[key].Link();
             }

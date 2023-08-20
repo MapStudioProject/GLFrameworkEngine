@@ -17,15 +17,23 @@ namespace GLFrameworkEngine
         private static Framebuffer Filter;
 
         public static GLTexture2D ScreenBuffer;
+        public static DepthTexture DepthBuffer;
 
         public static void Init()
         {
+            DepthBuffer = new DepthTexture(640, 720, PixelInternalFormat.DepthComponent24);
+
             Filter = new Framebuffer(FramebufferTarget.Framebuffer,
-                640, 720, PixelInternalFormat.Rgba, 1);
+                640, 720, PixelInternalFormat.Rgba, 1, false);
+            Filter.AddAttachment(FramebufferAttachment.DepthAttachment, DepthBuffer);
         }
 
-        public static GLTexture2D GetColorBuffer(GLContext control) {
+        public static GLTexture2D GetColorBuffer() {
             return ScreenBuffer;
+        }
+
+        public static DepthTexture GetDepthBuffer() {
+            return DepthBuffer;
         }
 
         public static void FilterScreen(GLContext control)

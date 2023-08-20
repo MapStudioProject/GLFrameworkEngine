@@ -38,6 +38,15 @@ namespace GLFrameworkEngine
             BoudingRender.Draw(context);
         }
 
+        public static void DrawPicking(GLContext context, Vector3 min, Vector3 max, ITransformableObject ob)
+        {
+            if (BoudingRender == null)
+                BoudingRender = new BoundingBoxRender(min, max);
+
+            BoudingRender.Update(min, max);
+            BoudingRender.DrawPicking(context, ob, ob.Transform.TransformMatrix);
+        }
+
         public static int[] Indices = new int[]
         {
             0, 1, 2, 3, //Bottom & Top

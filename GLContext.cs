@@ -21,6 +21,9 @@ namespace GLFrameworkEngine
         /// </summary>
         public Framebuffer ScreenBuffer { get; set; }
 
+        public DepthTexture DepthBuffer { get; set; }
+
+
         /// <summary>
         /// Selection tools used for selecting scene objects in different ways.
         /// </summary>
@@ -70,6 +73,11 @@ namespace GLFrameworkEngine
         /// The scene information containing the list of drawables along with selection handling.
         /// </summary>
         public GLScene Scene = new GLScene();
+
+        /// <summary>
+        /// The scene renderer.
+        /// </summary>
+        public ISceneRender SceneRender;
 
         /// <summary>
         /// The width of the current context. Should be given the viewport width.
@@ -155,6 +163,12 @@ namespace GLFrameworkEngine
         /// </summary>
         private void Init() {
             TransformTools.Init();
+        }
+
+        public void Clear()
+        {
+            GL.ClearColor(0, 0, 0, 0);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
         }
 
         /// <summary>

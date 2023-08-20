@@ -14,6 +14,9 @@ namespace GLFrameworkEngine
         //Camera fustrum data.
         private CameraFrustum CameraFrustum = new CameraFrustum();
 
+        public EventHandler OnBeforeUpdate;
+        public EventHandler OnAfterUpdate;
+
         public bool UseSquareAspect = false;
 
         /// <summary>
@@ -388,7 +391,7 @@ namespace GLFrameworkEngine
         public float ScaleByCameraDistance(Vector3 position, float factor = 0.002f)
         {
             float distance = (GetViewPostion() - position).Length;
-            return Math.Max(distance * factor, 1.0f);
+            return Math.Max(distance * factor, 0.01f);
         }
 
         public bool CanUpdate = true;
@@ -398,12 +401,16 @@ namespace GLFrameworkEngine
         /// </summary>
         public void UpdateMatrices()
         {
+            OnBeforeUpdate?.Invoke(this, EventArgs.Empty);
+
             if (CanUpdate)
                 projectionMatrix = GetProjectionMatrix();
 
             viewMatrix = GetViewMatrix();
 
             ViewProjectionMatrix = viewMatrix * projectionMatrix;
+
+            OnAfterUpdate?.Invoke(this, EventArgs.Empty);
 
             CameraFrustum.UpdateCamera(this);
 
@@ -542,6 +549,9 @@ namespace GLFrameworkEngine
         /// </summary>
         public Matrix4 GetProjectionMatrix()
         {
+            if (ZNear > ZFar)
+                ZFar = ZNear * 2;
+
             if (IsOrthographic)
             {
                 //Make sure the scale isn't negative or it would invert the viewport

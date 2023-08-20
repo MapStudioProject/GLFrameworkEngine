@@ -38,6 +38,10 @@ namespace GLFrameworkEngine
 
         public bool XRay = true;
 
+        public bool ScaleByCamera = true;
+
+        public float CameraScaleDistance = 0.04f;
+
         //Default texture to draw as.
         static GLTexture DefaultTexture = null;
 
@@ -61,8 +65,9 @@ namespace GLFrameworkEngine
 
             Material.TextureID = TextureID == -1 ? DefaultTexture.ID : TextureID;
             Material.ModelMatrix = Transform.TransformMatrix;
-            Material.ScaleByCameraDistance = true;
+            Material.ScaleByCameraDistance = ScaleByCamera;
             Material.DisplaySelection = IsSelected;
+            Material.CameraScaleDistance = CameraScaleDistance;
             Material.Render(context);
 
             if (XRay)

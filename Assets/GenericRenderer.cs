@@ -16,14 +16,18 @@ namespace GLFrameworkEngine
 
         public class TextureView
         {
-            public STGenericTexture OriginalSource = null;
+            public STGenericTexture Texture = null;
 
             public STChannelType RedChannel = STChannelType.Red;
             public STChannelType GreenChannel = STChannelType.Green;
             public STChannelType BlueChannel = STChannelType.Blue;
             public STChannelType AlphaChannel = STChannelType.Alpha;
 
-            public IRenderableTexture RenderTexture { get; set; }
+            public IRenderableTexture RenderTexture
+            {
+                get { return Texture.RenderableTex; }
+                set { Texture.RenderableTex = value; }
+            }
 
             public bool IsSRGB { get; set; }
 
@@ -34,6 +38,7 @@ namespace GLFrameworkEngine
 
             public TextureView(STGenericTexture texture)
             {
+                Texture = texture;
                 Width = texture.Width;
                 Height = texture.Height;
                 IsSRGB = texture.IsSRGB;
@@ -46,12 +51,16 @@ namespace GLFrameworkEngine
                 var watch = System.Diagnostics.Stopwatch.StartNew();
 
                 texture.LoadRenderableTexture();
-                RenderTexture = texture.RenderableTex;
 
                 watch.Stop();
-
-               // StudioLogger.WriteLine($"Loaded texture {texture.Name} in: {watch.ElapsedMilliseconds} ms");
             }
+
+            public TextureView(GLTexture texture)
+            {
+                Width = (uint)texture.Width;
+                Height = (uint)texture.Height;
+                Format = TexFormat.RGBA8_UNORM;
+                RenderTexture = texture;            }
         }
 
         public List<ModelAsset> Models = new List<ModelAsset>();

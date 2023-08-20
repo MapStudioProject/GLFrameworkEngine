@@ -9,33 +9,19 @@ namespace GLFrameworkEngine
 {
     public class EquirectangularRender
     {
-        static Dictionary<string, GLTexture2D> cubemapCache = new Dictionary<string, GLTexture2D>();
+        public GLTexture Texture => (GLTexture)Framebuffer.Attachments[0];
+        public Framebuffer Framebuffer;
 
-        public static GLTexture2D CreateTextureRender(GLTexture texture, int arrayLevel, int mipLevel, bool force = false)
+        public void Render(GLTexture texture, int arrayLevel, int mipLevel, bool hdrEncode = false)
         {
-            if (!force && cubemapCache.ContainsKey(texture.ID.ToString()))
-                return cubemapCache[texture.ID.ToString()];
-            else
-            {
-                if (cubemapCache.ContainsKey(texture.ID.ToString()))
-                    cubemapCache[texture.ID.ToString()]?.Dispose();
-            }
-
             int width = 512;
             int height = 256;
 
+            if (Framebuffer == null)
+                Framebuffer = new Framebuffer(FramebufferTarget.Framebuffer, width, height, PixelInternalFormat.Rgba, 1, false);
+
             var shader = GlobalShaders.GetShader("EQUIRECTANGULAR");
-            var textureOutput = GLTexture2D.CreateUncompressedTexture(width, height, PixelInternalFormat.Rgba32f);
-            textureOutput.MipCount = texture.MipCount;
-
-            texture.Bind();
-
-            textureOutput.Bind();
-            textureOutput.GenerateMipmaps();
-            textureOutput.Unbind();
-
-            Framebuffer frameBuffer = new Framebuffer(FramebufferTarget.Framebuffer, width, height);
-            frameBuffer.Bind();
+            Framebuffer.Bind();
 
             GL.Disable(EnableCap.Blend);
 
@@ -50,38 +36,28 @@ namespace GLFrameworkEngine
             }
             else
             {
-                GL.ActiveTexture(TextureUnit.Texture1);
+                GL.ActiveTexture(TextureUnit.Texture2);
                 texture.Bind();
-                shader.SetInt("dynamic_texture", 1);
+                shader.SetInt("dynamic_texture", 2);
             }
 
-            for (int i = 0; i < textureOutput.MipCount; i++)
-            {
-                int mipWidth = (int)(width * Math.Pow(0.5, i));
-                int mipHeight = (int)(height * Math.Pow(0.5, i));
-                frameBuffer.Resize(mipWidth, mipHeight);
+            int mipWidth = (int)(width * Math.Pow(0.5, mipLevel));
+            int mipHeight = (int)(height * Math.Pow(0.5, mipLevel));
 
-                GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0,
-                    textureOutput.ID, i);
+            shader.SetInt("arrayLevel", arrayLevel);
+            shader.SetInt("mipLevel", mipLevel);
 
-                shader.SetInt("arrayLevel", arrayLevel);
-                shader.SetInt("mipLevel", mipLevel);
+            shader.SetBoolToInt("hdr_decode", hdrEncode);
+            shader.SetFloat("scale", 4);
+            shader.SetFloat("range", 1024.0f);
+            shader.SetFloat("gamma", 2.2f);
 
-                GL.ClearColor(0, 0, 0, 0);
-                GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-                GL.Viewport(0, 0, mipWidth, mipHeight);
+            GL.ClearColor(0, 0, 0, 0);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            GL.Viewport(0, 0, width, height);
 
-                //Draw the texture onto the framebuffer
-                ScreenQuadRender.Draw();
-
-                break;
-            }
-
-            if (cubemapCache.ContainsKey(texture.ID.ToString()))
-                cubemapCache[texture.ID.ToString()] = textureOutput;
-            else
-                cubemapCache.Add(texture.ID.ToString(), textureOutput);
-            return textureOutput;
+            //Draw the texture onto the framebuffer
+            ScreenQuadRender.Draw();
         }
     }
 }

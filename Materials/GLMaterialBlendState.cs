@@ -86,13 +86,14 @@ namespace GLFrameworkEngine
 
         public void RenderAlphaTest()
         {
-            if (AlphaTest)
+			//Todo this breaks renderdoc
+        /*    if (AlphaTest)
             {
                 GL.Enable(EnableCap.AlphaTest);
                 GL.AlphaFunc(AlphaFunction, AlphaValue);
             }
             else
-                GL.Disable(EnableCap.AlphaTest);
+                GL.Disable(EnableCap.AlphaTest);*/
         }
 
         public void RenderBlendState()

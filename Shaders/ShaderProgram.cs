@@ -35,6 +35,7 @@ namespace GLFrameworkEngine
         public ShaderProgram(Shader[] shaders)
         {
             program = GL.CreateProgram();
+
             LoadSource(shaders);
         }
 
@@ -46,6 +47,7 @@ namespace GLFrameworkEngine
         public ShaderProgram(Shader vertexShader, Shader fragmentShader)
         {
             program = GL.CreateProgram();
+
             LoadSource(vertexShader, fragmentShader);
         }
 
@@ -61,6 +63,7 @@ namespace GLFrameworkEngine
         /// </summary>
         public void LoadSource(Shader[] shaders)
         {
+            this.shaders.Clear();
             foreach (Shader shader in shaders)
             {
                 if (!this.shaders.Contains(shader))
@@ -72,8 +75,44 @@ namespace GLFrameworkEngine
         /// <summary>
         /// Loads the shader from vertex and fragment shader stages.
         /// </summary>
+        public void LoadAsBinary(Shader vertexShader, Shader fragmentShader)
+        {
+            if (!this.shaders.Contains(vertexShader))
+                this.shaders.Add(vertexShader);
+            if (!this.shaders.Contains(fragmentShader))
+                this.shaders.Add(fragmentShader);
+
+            GL.ProgramParameter(program, ProgramParameterName.ProgramBinaryRetrievableHint, 1);
+
+            foreach (Shader shader in shaders)
+            {
+                GL.AttachShader(program, shader.id);
+            }
+
+            GL.LinkProgram(program);
+            foreach (var shader in shaders)
+            {
+                Console.WriteLine($"{shader.type.ToString("g")}:");
+
+                string log = GL.GetShaderInfoLog(shader.id);
+                Console.WriteLine(log);
+            }
+
+            LinkSucessful = true;
+        }
+
+        /// <summary>
+        /// Loads the shader from vertex and fragment shader stages.
+        /// </summary>
         public void LoadSource(Shader vertexShader, Shader fragmentShader)
         {
+            foreach (Shader shader in shaders)
+            {
+                GL.DetachShader(program, shader.id);
+            }
+
+            this.shaders.Clear();
+
             if (!this.shaders.Contains(vertexShader))
                 this.shaders.Add(vertexShader);
             if (!this.shaders.Contains(fragmentShader))
@@ -357,6 +396,14 @@ namespace GLFrameworkEngine
             this.type = type;
         }
 
+        public Shader(byte[] binary, ShaderType type)
+        {
+            id = GL.CreateShader(type);
+            GL.ShaderBinary(1, ref id, (BinaryFormat)All.ShaderBinaryFormatSpirVArb, binary, binary.Length);
+            GL.SpecializeShader(id, "main", 0, (int[])null, (int[])null);
+            this.type = type;
+        }
+
         public Shader(string src, ShaderType type, Dictionary<string, string> macros)
         {
             id = GL.CreateShader(type);
@@ -413,6 +460,11 @@ namespace GLFrameworkEngine
         public FragmentShader(string src)
             : base(src, ShaderType.FragmentShader)
         {
+        }
+
+        public FragmentShader(byte[] binary)
+            : base(binary, ShaderType.FragmentShader)
+        {
 
         }
     }
@@ -421,6 +473,12 @@ namespace GLFrameworkEngine
     {
         public VertexShader(string src)
             : base(src, ShaderType.VertexShader)
+        {
+
+        }
+
+        public VertexShader(byte[] binary)
+    : base(binary, ShaderType.VertexShader)
         {
 
         }

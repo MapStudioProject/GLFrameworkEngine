@@ -15,7 +15,7 @@ namespace GLFrameworkEngine
         /// <summary>
         /// The rendered texture instance used to display the texture in OpenGL.
         /// </summary>
-        public GLTexture RenderableTex { get; set; }
+        public virtual GLTexture RenderableTex { get; set; }
 
         public void CreateTextureRender(GLContext control, EventHandler thumbnailUpdate, int width = 50, int height = 50)
         {

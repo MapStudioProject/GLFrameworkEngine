@@ -685,13 +685,19 @@ namespace GLFrameworkEngine
                     if (HoveredAxis.HasFlag(Axis.All)) hoveredAxis[6] = true;
                 }
 
+                bool[] display = new bool[3] { 
+                    TransformSettings.UseX,
+                    TransformSettings.UseY,
+                    TransformSettings.UseZ,
+                };
+
                 //Draw the gizmo depending on the current action
                 if (action is TranslateAction)
-                    TranslateRenderer.Render(context, TransformSettings.Origin, rotation, TransformSettings.GizmoScale, isMoving, selectedAxis, hoveredAxis);
+                    TranslateRenderer.Render(context, TransformSettings.Origin, rotation, TransformSettings.GizmoScale, isMoving, display, selectedAxis, hoveredAxis);
                 if (action is ScaleAction)
-                    ScaleRenderer.Render(context, TransformSettings.Origin, rotation, TransformSettings.GizmoScale, isMoving, selectedAxis, hoveredAxis);
+                    ScaleRenderer.Render(context, TransformSettings.Origin, rotation, TransformSettings.GizmoScale, isMoving, display, selectedAxis, hoveredAxis);
                 if (action is RotateAction)
-                    RotateRenderer.Render(context, TransformSettings.Origin, rotation, TransformSettings.GizmoScale, isMoving, selectedAxis, hoveredAxis);
+                    RotateRenderer.Render(context, TransformSettings.Origin, rotation, TransformSettings.GizmoScale, isMoving, display, selectedAxis, hoveredAxis);
                 if (action is RectangleAction)
                     RectangleRenderer.Render(context, BoundingBox, TransformSettings.Origin, rotation, TransformSettings.GizmoScale, isMoving, selectedAxis, hoveredAxis);
             }

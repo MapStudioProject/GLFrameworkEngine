@@ -9,27 +9,33 @@ namespace GLFrameworkEngine
 {
     public class LUTRender
     {
-        static Dictionary<string, int> lutCache = new Dictionary<string, int>();
+        public GLTexture2D Output => (GLTexture2D)Framebuffer.Attachments[0];
 
-        static int ID = -1;
+        private Framebuffer Framebuffer;
 
-        public static int CreateTextureRender(int textureID, int width, int height)
+        public LUTRender()
         {
-            if (lutCache.ContainsKey(textureID.ToString()))
-                return lutCache[textureID.ToString()];
+        }
+
+        public void CreateTextureRender(GLTexture texture, int width, int height)
+        {
+            if (Framebuffer  == null)
+            {
+                Framebuffer = new Framebuffer(FramebufferTarget.Framebuffer, width, height);
+
+                Output.Bind();
+                Output.SetFilter(TextureMinFilter.Nearest, TextureMagFilter.Nearest);
+                Output.Unbind();
+            }
+
+            Framebuffer.Bind();
 
             var shader = GlobalShaders.GetShader("LUT_DISPLAY");
-
-            Framebuffer frameBuffer = new Framebuffer(FramebufferTarget.Framebuffer, width, height, PixelInternalFormat.Rgba16f, 1);
-            frameBuffer.Bind();
 
             GL.Disable(EnableCap.Blend);
 
             shader.Enable();
-
-            GL.ActiveTexture(TextureUnit.Texture1);
-            GL.BindTexture(TextureTarget.Texture3D, textureID);
-            shader.SetInt("dynamic_texture_array", 1);
+            shader.SetTexture(texture, "dynamic_texture_array", 1);
 
             GL.ClearColor(0, 0, 0, 0);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
@@ -41,12 +47,6 @@ namespace GLFrameworkEngine
             //Disable shader and textures
             GL.UseProgram(0);
             GL.BindTexture(TextureTarget.Texture3D, 0);
-
-            var image = (GLTexture2D)frameBuffer.Attachments[0];
-            ID = image.ID;
-
-            lutCache.Add(textureID.ToString(), ID);
-            return ID;
         }
     }
 }

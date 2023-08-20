@@ -39,6 +39,8 @@ namespace GLFrameworkEngine
 
         public float CameraScale = 1.0f;
 
+        public float CameraScaleDistance = 0.04f;
+
         public void Render(GLContext context)
         {
             var mtxView = context.Camera.ViewMatrix;
