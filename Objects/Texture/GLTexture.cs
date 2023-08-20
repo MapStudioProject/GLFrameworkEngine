@@ -66,7 +66,7 @@ namespace GLFrameworkEngine
 
         public void Clear()
         {
-            GL.ClearTexImage(ID, 0, this.PixelFormat, this.PixelType, 0);
+            GL.ClearTexImage(ID, 0, this.PixelFormat, this.PixelType, IntPtr.Zero);
         }
 
         public void SetFilter(TextureMinFilter minFilter, TextureMagFilter magFilter)
