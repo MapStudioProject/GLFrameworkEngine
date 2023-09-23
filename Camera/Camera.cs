@@ -230,7 +230,7 @@ namespace GLFrameworkEngine
         /// <summary>
         /// Gets the combined view projection matrix of the camera.
         /// </summary>
-        public Matrix4 ViewProjectionMatrix { get; private set; }
+        public Matrix4 ViewProjectionMatrix { get; set; }
 
         /// <summary>
         /// Gets or sets the projection matrix.
@@ -421,6 +421,41 @@ namespace GLFrameworkEngine
             }
         }
 
+        public void SetPosition(Vector3 position)
+        {
+            if (this.Mode == CameraMode.Inspect)
+            {
+                _targetPosition = Vector3.Transform(InverseRotationMatrix, position) - new Vector3(0, 0, position.Z);
+                _targetDistance = position.Z;
+            }
+            else
+            {
+                _targetPosition = position;
+                _targetDistance = 0;
+            }
+        }
+
+        public void FocusOnObject(Vector3 position)
+        {
+            //Todo animated camera does not look very good 
+
+            /* Dictionary<CameraAnimationKeys, float> anim = new Dictionary<CameraAnimationKeys, float>();
+             anim.Add(CameraAnimationKeys.PositionX, position.X);
+             anim.Add(CameraAnimationKeys.PositionY, position.Y);
+             anim.Add(CameraAnimationKeys.PositionZ, position.Z);
+             anim.Add(CameraAnimationKeys.Distance, distance);
+
+             StartCameraAnimation(anim, 5);
+
+             return;*/
+
+            _targetPosition = position;
+            if (cameraMode == CameraMode.Inspect)
+                _targetDistance = FocusDistance;
+            else
+                TargetPosition += Vector3.Transform(InverseRotationMatrix, new Vector3(0, 0, FocusDistance));
+        }
+
         /// <summary>
         /// Transforms the camera position to focus on the given transformation.
         /// </summary>
@@ -554,6 +589,8 @@ namespace GLFrameworkEngine
 
             if (IsOrthographic)
             {
+              //  return Matrix4.CreateOrthographicOffCenter(-4150.000f, 2950.000f, -3100.000f, 4000.000f, -1000000, 1000000); 
+
                 //Make sure the scale isn't negative or it would invert the viewport
                 // float scale = Math.Max((Distance + TargetDistance) / 1000.0f, 0.000001f);
                 float distance = this.cameraMode == CameraMode.Inspect ? TargetDistance : Distance;

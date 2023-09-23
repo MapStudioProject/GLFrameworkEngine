@@ -49,7 +49,7 @@ namespace GLFrameworkEngine
 
         public static Vector3[] GetVertices(Camera camera)
         {
-            float farPlane = camera.ZFar;
+            float farPlane = MathF.Min(camera.ZFar, 100);
             float nearPlane = camera.ZNear;
             float tan = (float)Math.Tan(camera.Fov / 2);
             float aspect = camera.AspectRatio;

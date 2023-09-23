@@ -106,6 +106,14 @@ namespace GLFrameworkEngine
                 objects.Remove(ob);
         }
 
+        public void Clear()
+        {
+            objects.Clear();
+            ActiveActions.Clear();
+            PreviousTransforms.Clear();
+            ActiveTransforms.Clear();
+        }
+
         /// <summary>
         /// Inits an action so one can transform selected objects.
         /// </summary>

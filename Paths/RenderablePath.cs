@@ -169,6 +169,7 @@ namespace GLFrameworkEngine
         //Events
         public EventHandler PointAddedCallback;
         public EventHandler PointRemovedCallback;
+        public EventHandler RemovedSelectedCallback;
 
         public EventHandler AddCallback;
         public EventHandler RemoveCallback;
@@ -452,6 +453,8 @@ namespace GLFrameworkEngine
                 RemovePointReferences(obj);
             foreach (var obj in selected)
                 RemovePoint(obj);
+
+            RemovedSelectedCallback?.Invoke(selected, EventArgs.Empty);
         }
 
         public virtual void RemovePoint(RenderablePathPoint point)

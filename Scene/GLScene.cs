@@ -110,6 +110,8 @@ namespace GLFrameworkEngine
                 ((EditableObject)render).OnRemoved();
             if (render is RenderablePath)
                 ((RenderablePath)render).OnRemoved();
+
+            DeselectAll(GLContext.ActiveContext);
         }
 
         public void SelectAll(GLContext context)

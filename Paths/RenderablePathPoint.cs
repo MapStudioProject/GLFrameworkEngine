@@ -274,7 +274,7 @@ namespace GLFrameworkEngine
                 //Diplay only when enabled and the scale is visible
                 if (RenderablePath.DisplayPointSize && (Transform.Scale.X > 2 || Transform.Scale.Y > 2 || Transform.Scale.Z > 2))
                 {
-                    Matrix4 boundingTransform = Matrix4.CreateScale(0.5f) * Transform.TransformMatrix;
+                    Matrix4 boundingTransform = Matrix4.CreateScale(100) * Transform.TransformMatrix;
                     DrawSizeSphere(context, boundingTransform, Pass.TRANSPARENT);
                 }
             }

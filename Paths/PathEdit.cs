@@ -643,7 +643,6 @@ namespace GLFrameworkEngine
 
             //Add the new point
             var point = CreatePoint(position);
-            AddPoint(point);
 
             //Connect via parent if exists
             if (parent != null)
@@ -669,6 +668,8 @@ namespace GLFrameworkEngine
                 point.Transform.UpdateMatrix(true);
                 lastPoint.AddChild(point, true);
             }
+
+            AddPoint(point);
 
             PrepareSelectNewPoint(point, parent != null);
         }
