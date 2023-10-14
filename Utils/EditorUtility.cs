@@ -14,10 +14,8 @@ namespace GLFrameworkEngine
         /// Gets the current position for spawning objects.
         /// </summary>
         /// <returns></returns>
-        public static Vector3 GetObjectPlacementPosition()
+        public static Vector3 GetObjectPlacementPosition(GLContext context)
         {
-            var context = GLContext.ActiveContext;
-
             //If the object is being added without the mouse on screen, add to the center of the screen
              if (!context.Focused)
              {
@@ -28,6 +26,9 @@ namespace GLFrameworkEngine
 
             //By default show the object next to the camera
             var position = context.GetPointUnderMouse(100);
+
+            if (context.Camera.Is2D)
+                position.Y = 0;
 
             //Hit the nearest collision if possible
             if (context.EnableDropToCollision && context.CollisionCaster != null)
@@ -47,10 +48,8 @@ namespace GLFrameworkEngine
         /// Sets the current transform for spawning objects.
         /// </summary>
         /// <returns></returns>
-        public static void SetObjectPlacementPosition(GLTransform transform, bool byCursor = false)
+        public static void SetObjectPlacementPosition(GLContext context, GLTransform transform, bool byCursor = false)
         {
-            var context = GLContext.ActiveContext;
-
             if (byCursor)
             {
                 transform.Position = context.Cursor3DPosition;
@@ -71,6 +70,9 @@ namespace GLFrameworkEngine
             //By default show the object next to the camera
             var position = context.GetPointUnderMouse(100);
             var rotation = transform.Rotation;
+
+            if (context.Camera.Is2D)
+                position.Y = 0;
 
             //Hit the nearest collision if possible
             if (context.EnableDropToCollision && context.CollisionCaster != null)

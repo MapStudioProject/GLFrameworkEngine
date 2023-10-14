@@ -99,9 +99,9 @@ namespace GLFrameworkEngine
             return ScaleFactor != Vector3.One ? 1 : 0;
         }
 
-        public void ApplyTransform(List<GLTransform> previousTransforms, List<GLTransform> adjustedTransforms)
+        public void ApplyTransform(GLContext context, List<GLTransform> previousTransforms, List<GLTransform> adjustedTransforms)
         {
-            var settings = GLContext.ActiveContext.TransformTools.TransformSettings;
+            var settings = context.TransformTools.TransformSettings;
 
             //Update all transforms
             for (int i = 0; i < adjustedTransforms.Count; i++)

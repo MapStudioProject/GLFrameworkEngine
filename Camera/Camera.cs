@@ -584,6 +584,8 @@ namespace GLFrameworkEngine
         /// </summary>
         public Matrix4 GetProjectionMatrix()
         {
+            if (Fov == 0) return Matrix4.Identity;
+
             if (ZNear > ZFar)
                 ZFar = ZNear * 2;
 
@@ -596,7 +598,7 @@ namespace GLFrameworkEngine
                 float distance = this.cameraMode == CameraMode.Inspect ? TargetDistance : Distance;
                 float scale = Math.Max((distance) / 1000.0f, 0.000001f);
 
-                return Matrix4.CreateOrthographicOffCenter(-(Width * scale), Width * scale, -(Height * scale), Height * scale, -100000, 100000);
+                return Matrix4.CreateOrthographicOffCenter(-(Width * scale), Width * scale, -(Height * scale), Height * scale, -ZFar, ZFar);
             }
             else
                 return Matrix4.CreatePerspectiveFieldOfView(Fov, AspectRatio, 
@@ -1118,8 +1120,31 @@ namespace GLFrameworkEngine
             else
             {
                 //Standard mouse scroll
-                Zoom(e.Delta * 0.1f * _camera.ZoomSpeed, true);
+                if (_camera.Is2D)
+                    Zoom2D(e, k);
+                else
+                    Zoom(e.Delta * 0.1f * _camera.ZoomSpeed, true);
             }
+        }
+
+        public void Zoom2D(MouseEventInfo e, KeyEventInfo k)
+        {
+            //Standard mouse scroll zoom in/out
+            //Increase amount based on key shift
+            float delta = e.Delta * 0.1f * _camera.ZoomSpeed * _camera._targetDistance;
+
+            Vector3 vec;
+
+            Vector2 normCoords = OpenGLHelper.NormMouseCoords(e.X, e.Y, _camera.Width, _camera.Height);
+
+            //Place the camera near the current mouse coordinates
+            vec.X = (-normCoords.X * delta) * _camera.FactorX;
+            vec.Y = (normCoords.Y * delta) * _camera.FactorY;
+            vec.Z = 0;
+
+            _camera._targetDistance -= delta;
+            _camera._targetPosition -= Vector3.Transform(_camera.InverseRotationMatrix, vec);
+            _camera.UpdateMatrices();
         }
 
         public void KeyPress(KeyEventInfo e)

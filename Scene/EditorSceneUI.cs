@@ -34,7 +34,7 @@ namespace GLFrameworkEngine
                 if (Object.IsSelected != value)
                 {
                     Object.IsSelected = value;
-                    GLContext.ActiveContext.Scene.OnSelectionChanged(GLContext.ActiveContext);
+                    GLContext.ActiveContext.Scene.OnSelectionChanged(GLContext.ActiveContext, Object);
                 }
             }
         }

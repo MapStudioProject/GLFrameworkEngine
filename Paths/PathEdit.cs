@@ -14,10 +14,10 @@ namespace GLFrameworkEngine
 
         #region Input
 
-        public virtual void OnMouseDown(MouseEventInfo mouseInfo)
+        public virtual void OnMouseDown(GLContext context, MouseEventInfo mouseInfo)
         {
             //Disable tools during selection actions
-            if (GLContext.ActiveContext.SelectionTools.IsActive)
+            if (context.SelectionTools.IsActive)
                 return;
 
             if (mouseInfo.LeftButton == OpenTK.Input.ButtonState.Pressed)
@@ -27,47 +27,56 @@ namespace GLFrameworkEngine
 
                 //Add extruding points via alt down and mouse click
                 if (KeyEventInfo.State.KeyAlt && isActive)
-                    this.ExtrudePointsFromSelected(false, GetHovered() == null);
+                    this.ExtrudePointsFromSelected(context, false, GetHovered(context) == null);
 
                 if (EditToolMode == ToolMode.Drawing && this.IsActive)
-                    StartDrawAction();
+                    StartDrawAction(context);
                 if (EditToolMode == ToolMode.Connection)
-                    StartConnecion();
+                    StartConnecion(context);
                 if (EditToolMode == ToolMode.Erase)
-                    StartEraseAction();
+                    StartEraseAction(context);
                 if (EditToolMode == ToolMode.Create && this.IsActive)
-                    SetCreateAction();
+                    SetCreateAction(context);
             }
         }
 
-        public virtual void OnMouseUp(MouseEventInfo mouseInfo) 
+        public virtual void OnMouseUp(GLContext context, MouseEventInfo mouseInfo) 
         {
             if (EditToolMode == ToolMode.Connection)
-                EndConnecion(mouseInfo.X, mouseInfo.Y);
+                EndConnecion(context, mouseInfo.X, mouseInfo.Y);
             else if (EditToolMode == ToolMode.Drawing)
-                EndDrawAction();
+                EndDrawAction(context);
             else if (EditToolMode == ToolMode.Erase)
-                EndEraseAction();
+                EndEraseAction(context);
         }
 
-        public virtual void OnMouseMove(MouseEventInfo mouseInfo)
+        public virtual void OnMouseMove(GLContext context, MouseEventInfo mouseInfo)
         {
             if (!EditMode || !this.IsActive)
                 return;
 
             if (EditToolMode == ToolMode.Connection)
-                UpdateConnecion(mouseInfo.X, mouseInfo.Y);
+                UpdateConnecion(context, mouseInfo.X, mouseInfo.Y);
             else if (EditToolMode == ToolMode.Drawing && this.IsActive)
                 UpdateDrawAction(mouseInfo.X, mouseInfo.Y);
             else if (EditToolMode == ToolMode.Erase)
-                UpdateEraseAction();
+                UpdateEraseAction(context);
             else if (EditToolMode == ToolMode.Create && this.IsActive)
-                UpdateCreateAction(mouseInfo.X, mouseInfo.Y);
-            else if (GLContext.ActiveContext.TransformTools.ActiveMode == TransformEngine.TransformActions.Translate)
-                this.ConnectToHoveredPoints();
+                UpdateCreateAction(context, mouseInfo.X, mouseInfo.Y);
+            else if (context.TransformTools.ActiveMode == TransformEngine.TransformActions.Translate)
+                this.ConnectToHoveredPoints(context);
+
+            bool hoverPreview = true;
+
+            if (hoverPreview)
+            {
+                var hovered = GetHoveredPoint(context);
+                foreach (var pt in this.PathPoints)
+                    pt.IsHovered = pt == hovered;
+            }
         }
 
-        public virtual void OnKeyDown(KeyEventInfo keyInfo)
+        public virtual void OnKeyDown(GLContext context, KeyEventInfo keyInfo)
         {
             if (keyInfo.IsKeyDown(InputSettings.INPUT.Scene.Hide))
             {
@@ -89,16 +98,18 @@ namespace GLFrameworkEngine
             bool isActive = this.IsActive;
 
             if (keyInfo.IsKeyDown(InputSettings.INPUT.Scene.Extrude) && isActive)
-                this.ExtrudePointsFromSelected();
+                this.ExtrudePointsFromSelected(context);
             else if (keyInfo.IsKeyDown(InputSettings.INPUT.Scene.Create) && isActive)
-                this.ExtrudePointsFromSelected(true, true);
+                this.ExtrudePointsFromSelected(context, true, true);
 
             if (hasSelection)
             {
                 if (keyInfo.IsKeyDown(InputSettings.INPUT.Scene.Fill))
-                    this.FillSelectedPoints();
+                    this.FillSelectedPoints(context);
                 if (keyInfo.IsKeyDown(InputSettings.INPUT.Scene.Insert))
-                    this.SubdivideSelectedPoints();
+                    this.SubdivideSelectedPoints(context);
+                if (keyInfo.IsKeyDown(InputSettings.INPUT.Scene.Dupe))
+                    this.DuplicateSelected(context);
             }
         }
 
@@ -110,7 +121,7 @@ namespace GLFrameworkEngine
             CreatePointDisplay = null;
         }
 
-        private void SetCreateAction()
+        private void SetCreateAction(GLContext context)
         {
             if (CreatePointDisplay == null)
                 return;
@@ -118,7 +129,7 @@ namespace GLFrameworkEngine
             var selected = GetSelectedPoints().ToList();
 
             //Add a new point and use the display point placement.
-            var newPoint = AddSinglePoint();
+            var newPoint = AddSinglePoint(context);
             newPoint.Transform.Position = CreatePointDisplay.Transform.Position;
             newPoint.Transform.UpdateMatrix(true);
                 
@@ -131,10 +142,8 @@ namespace GLFrameworkEngine
             newPoint.IsSelected = true;
         }
 
-        private void UpdateCreateAction(int x, int y)
+        private void UpdateCreateAction(GLContext context, int x, int y)
         {
-            var context = GLContext.ActiveContext;
-
             //Create a temporary display point for previewing where the point will create at
             bool create = CreatePointDisplay == null;
             if (create) {
@@ -162,17 +171,17 @@ namespace GLFrameworkEngine
 
         private RenderablePathPoint drawStartConnectedPoint;
 
-        private void StartDrawAction()
+        private void StartDrawAction(GLContext context)
         {
             drawPointStack = new List<Vector2>();
 
             //Set the point to start a connection to
-            drawStartConnectedPoint = GetHoveredPoint();
+            drawStartConnectedPoint = GetHoveredPoint(context);
 
             //Disable camera/transform handling
-            GLContext.ActiveContext.TransformTools.Enabled = false;
-            GLContext.ActiveContext.DisableCameraMovement = true;
-            GLContext.ActiveContext.PickingTools.Enabled = false;
+            context.TransformTools.Enabled = false;
+            context.DisableCameraMovement = true;
+            context.PickingTools.Enabled = false;
         }
 
         private void UpdateDrawAction(int x, int y)
@@ -185,10 +194,8 @@ namespace GLFrameworkEngine
                 drawPointStack.Add(vec);
         }
 
-        private List<Vector3> CalculateDrawnPoints3DSpace()
+        private List<Vector3> CalculateDrawnPoints3DSpace(GLContext context)
         {
-            var context = GLContext.ActiveContext;
-
             //Todo need some kind of algorthim to cleanup really close points
 
             List<Vector3> points = new List<Vector3>();
@@ -207,23 +214,23 @@ namespace GLFrameworkEngine
             return points;
         }
 
-        private void EndDrawAction()
+        private void EndDrawAction(GLContext context)
         {
             if (drawPointStack == null || drawPointStack.Count == 0)
                 return;
 
             //The point hovered at the end of a draw to possibly connect to
-            var drawEndConnectedPoint = GetHoveredPoint();
+            var drawEndConnectedPoint = GetHoveredPoint(context);
 
             //Deselect everything
-            GLContext.ActiveContext.Scene.DeselectAll(GLContext.ActiveContext);
+            context.Scene.DeselectAll(context);
 
             List<RenderablePathPoint> addedPoints = new List<RenderablePathPoint>();
 
             //Generate a list of points with each connected to each other
             float dist = 0;
 
-            var points = CalculateDrawnPoints3DSpace();
+            var points = CalculateDrawnPoints3DSpace(context);
             for (int i = 0; i < points.Count; i++)
             {
                 if (i < points.Count - 1) {
@@ -232,7 +239,7 @@ namespace GLFrameworkEngine
                 }
                 if (dist > SegmentDrawPointLength)
                 {
-                    Vector3 position = EditorUtility.GetObjectPlacementPosition();
+                    Vector3 position = EditorUtility.GetObjectPlacementPosition(context);
                     var pt = CreatePoint(position);
                     //Add the new point
                     AddPoint(pt);
@@ -257,47 +264,47 @@ namespace GLFrameworkEngine
             foreach (var point in addedPoints)
                 OnPointAdded(point);
 
-            GLContext.ActiveContext.Scene.AddToUndo(new RevertableAddPointCollection(addedPoints));
+            context.Scene.AddToUndo(new RevertableAddPointCollection(addedPoints));
 
             //Deselect added points
-            GLContext.ActiveContext.Scene.DeselectAll(GLContext.ActiveContext);
+            context.Scene.DeselectAll(context);
 
             //Reset data and allow transforming and camera movement now operation is complete
             drawPointStack.Clear();
             drawPointStack = null;
-            GLContext.ActiveContext.PickingTools.Enabled = true;
-            GLContext.ActiveContext.TransformTools.Enabled = true;
-            GLContext.ActiveContext.DisableCameraMovement = false;
+            context.PickingTools.Enabled = true;
+            context.TransformTools.Enabled = true;
+            context.DisableCameraMovement = false;
         }
 
         #endregion
 
         #region EraseTool
 
-        public void StartEraseAction()
+        public void StartEraseAction(GLContext context)
         {
             MouseEventInfo.MouseCursor = MouseEventInfo.Cursor.Eraser;
 
             //Disable camera/transform handling
-            GLContext.ActiveContext.TransformTools.Enabled = false;
-            GLContext.ActiveContext.DisableCameraMovement = true;
-            GLContext.ActiveContext.PickingTools.Enabled = false;
+            context.TransformTools.Enabled = false;
+            context.DisableCameraMovement = true;
+            context.PickingTools.Enabled = false;
             //Deselect everything
-            GLContext.ActiveContext.Scene.DeselectAll(GLContext.ActiveContext);
+            context.Scene.DeselectAll(context);
 
             //Start an erase operation with an undoable stack
             undoErasedStack = new List<IRevertable>();
-            UpdateEraseAction();
+            UpdateEraseAction(context);
         }
 
-        public void UpdateEraseAction()
+        public void UpdateEraseAction(GLContext context)
         {
             //Make sure an erase operation as been started first before applying one.
             if (undoErasedStack == null)
                 return;
 
             //Erase hovered points
-            var hovered = GetHovered();
+            var hovered = GetHovered(context);
             if (hovered == null)
                 return;
 
@@ -316,7 +323,7 @@ namespace GLFrameworkEngine
             }
         }
 
-        public void EndEraseAction()
+        public void EndEraseAction(GLContext context)
         {
             //No erase operation set, skip
             if (undoErasedStack == null)
@@ -324,13 +331,13 @@ namespace GLFrameworkEngine
 
             //Add the undo stack to the scene for handling undo operations
             if (undoErasedStack.Count > 0)
-                GLContext.ActiveContext.Scene.AddToUndo(undoErasedStack);
+                context.Scene.AddToUndo(undoErasedStack);
 
             //Reset data and allow transforming and camera movement now operation is complete
             undoErasedStack = null;
-            GLContext.ActiveContext.PickingTools.Enabled = true;
-            GLContext.ActiveContext.TransformTools.Enabled = true;
-            GLContext.ActiveContext.DisableCameraMovement = false;
+            context.PickingTools.Enabled = true;
+            context.TransformTools.Enabled = true;
+            context.DisableCameraMovement = false;
             MouseEventInfo.MouseCursor = MouseEventInfo.Cursor.Arrow;
             drawStartConnectedPoint = null;
         }
@@ -339,23 +346,23 @@ namespace GLFrameworkEngine
 
         #region ConnectionTool
 
-        public void StartConnecion()
+        public void StartConnecion(GLContext context)
         {
             //No source point to start a connection so skip
-            var hovered = GetHoveredPoint();
+            var hovered = GetHoveredPoint(context);
             if (hovered == null)
                 return;
 
             //Set the point to start a connection to
             this.StartConnecitonPoint = hovered;
             //Disable camera/transform handling
-            GLContext.ActiveContext.TransformTools.Enabled = false;
-            GLContext.ActiveContext.DisableCameraMovement = true;
+            context.TransformTools.Enabled = false;
+            context.DisableCameraMovement = true;
             //Set an undo stack for undoing connections
             undoConnectionStack = new List<IRevertable>();
         }
 
-        public void UpdateConnecion(int x, int y)
+        public void UpdateConnecion(GLContext context, int x, int y)
         {
             //Source is null so return
             if (this.StartConnecitonPoint == null)
@@ -364,10 +371,10 @@ namespace GLFrameworkEngine
             //Update the display for the end connection
 
             //hovered points
-            var hovered = GetHoveredPoint();
+            var hovered = GetHoveredPoint(context);
             //Display screen coords if nothing is hovered
             if (hovered == null) {
-                this.ConnectionPoint = GLContext.ActiveContext.ScreenToWorld(x, y, 40);
+                this.ConnectionPoint = context.ScreenToWorld(x, y, 40);
                 return;
             }
 
@@ -382,28 +389,26 @@ namespace GLFrameworkEngine
             }
         }
 
-        public void EndConnecion(int x, int y)
+        public void EndConnecion(GLContext context, int x, int y)
         {
             //Source is null so return
             if (this.StartConnecitonPoint == null)
                 return;
 
-            var context = GLContext.ActiveContext;
-
             //End connection with a given hovered dest point to connect from the starting point
-            var hovered = GetHovered() as RenderablePathPoint;
+            var hovered = GetHovered(context) as RenderablePathPoint;
             //Display screen coords if nothing is hovered
             if (hovered != null)
                 ConnectPoints(StartConnecitonPoint, hovered);
 
             //Add the undo stack to the scene for handling undo operations
             if (undoConnectionStack.Count > 0)
-                GLContext.ActiveContext.Scene.AddToUndo(undoConnectionStack);
+                context.Scene.AddToUndo(undoConnectionStack);
 
             //Reset data and allow transforming and camera movement now operation is complete
             this.StartConnecitonPoint = null;
-            GLContext.ActiveContext.TransformTools.Enabled = true;
-            GLContext.ActiveContext.DisableCameraMovement = false;
+            context.TransformTools.Enabled = true;
+            context.DisableCameraMovement = false;
             undoConnectionStack = null;
         }
 
@@ -428,7 +433,7 @@ namespace GLFrameworkEngine
         /// <summary>
         /// Makes the axis from the first selected point the same value for all other selected points.
         /// </summary>
-        public void AlignAxis(int axis)
+        public void AlignAxis(GLContext context, int axis)
         {
             var selected = this.GetSelectedPoints();
             if (selected.Count <= 1)
@@ -436,7 +441,7 @@ namespace GLFrameworkEngine
 
             //Add to undo
             var transforms = selected.Select(x => x.Transform).ToArray();
-            GLContext.ActiveContext.Scene.AddToUndo(new TransformUndo(transforms));
+            context.Scene.AddToUndo(new TransformUndo(transforms));
 
             foreach (var point in selected)
             {
@@ -453,10 +458,10 @@ namespace GLFrameworkEngine
         /// <summary>
         /// Divides a selected point between its selected children adding a mid point between
         /// </summary>
-        public void SubdivideSelectedPoints()
+        public void SubdivideSelectedPoints(GLContext context)
         {
             List<RenderablePathPoint> addedPoints = new List<RenderablePathPoint>();
-            GLContext.ActiveContext.Scene.BeginUndoCollection();
+            context.Scene.BeginUndoCollection();
 
             var selected = GetSelectedPoints();
             foreach (var point in selected)
@@ -476,7 +481,7 @@ namespace GLFrameworkEngine
                     AddPoint(newpoint, index);
 
                     //Revert back parents and children
-                    GLContext.ActiveContext.Scene.AddToUndo(new RevertableParentChildCollection(child));
+                    context.Scene.AddToUndo(new RevertableParentChildCollection(child));
 
                     newpoint.Transform.Scale = outputScale;
                     newpoint.Transform.Rotation = outputRot;
@@ -492,18 +497,18 @@ namespace GLFrameworkEngine
 
             if (addedPoints.Count > 0)
             {
-                GLContext.ActiveContext.Scene.AddToUndo(new RevertableAddPointCollection(addedPoints));
+                context.Scene.AddToUndo(new RevertableAddPointCollection(addedPoints));
                 foreach (var pt in addedPoints)
                     OnPointAdded(pt);
             }
 
-            GLContext.ActiveContext.Scene.EndUndoCollection();
+            context.Scene.EndUndoCollection();
         }
 
         /// <summary>
         /// Fills a connection between 2 selected points
         /// </summary>
-        public void FillSelectedPoints()
+        public void FillSelectedPoints(GLContext context)
         {
             var selected = GetSelectedPoints();
             //Only fill a connection between 2 selected points.
@@ -512,17 +517,17 @@ namespace GLFrameworkEngine
 
             if (!selected[0].Children.Contains(selected[1])) {
                 //Revert back parents and children
-                GLContext.ActiveContext.Scene.AddToUndo(new RevertableParentChildCollection(selected[0]));
+                context.Scene.AddToUndo(new RevertableParentChildCollection(selected[0]));
                 selected[0].AddChild(selected[1]);
             }
             else //disconnect
             {
                 selected[0].RemoveChild(selected[1]);
             }
-            GLContext.ActiveContext.UpdateViewport = true;
+            context.UpdateViewport = true;
         }
 
-        public void UnlinkSelectedPoints()
+        public void UnlinkSelectedPoints(GLContext context)
         {
             var selected = GetSelectedPoints();
             foreach (var point in this.PathPoints)
@@ -538,20 +543,20 @@ namespace GLFrameworkEngine
                         point.Children.Remove(sel);
                 }
             }
-            GLContext.ActiveContext.UpdateViewport = true;
+            context.UpdateViewport = true;
         }
 
         /// <summary>
         /// Merges selected points to the first selected.
         /// </summary>
-        public void MergeSelectedPoints()
+        public void MergeSelectedPoints(GLContext context)
         {
             var selected = GetSelectedPoints();
             //No selection found so skip.
             if (selected.Count == 0)
                 return;
 
-            GLContext.ActiveContext.Scene.BeginUndoCollection();
+            context.Scene.BeginUndoCollection();
 
             var points = selected.ToList();
             var firstPoint = selected.FirstOrDefault();
@@ -559,17 +564,17 @@ namespace GLFrameworkEngine
             {
                 //Connect all selected that isn't the first selected point
                 if (pt != firstPoint) {
-                    GLContext.ActiveContext.Scene.AddToUndo(new RevertableConnectPointCollection(pt, firstPoint));
+                    context.Scene.AddToUndo(new RevertableConnectPointCollection(pt, firstPoint));
                     pt.ConnectToPoint(firstPoint);
                 }
             }
-            GLContext.ActiveContext.Scene.EndUndoCollection();
+            context.Scene.EndUndoCollection();
         }
 
         /// <summary>
         /// Connects a point that is currently hovered and selected onto another point.
         /// </summary>
-        public void ConnectToHoveredPoints()
+        public void ConnectToHoveredPoints(GLContext context)
         {
             if (!ConnectHoveredPoints || !IsVisible)
                 return;
@@ -584,19 +589,19 @@ namespace GLFrameworkEngine
                 return;
 
             //Make sure the selected point is hovered
-            var isSelectedHovered = IsPointHovered(selected.FirstOrDefault());
+            var isSelectedHovered = IsPointHovered(context, selected.FirstOrDefault());
             if (!isSelectedHovered)
                 return;
 
             //hovered point hovering the current selected point
-            var hovered = GetHoveredPoint();
+            var hovered = GetHoveredPoint(context);
             if (hovered == null)
                 return;
 
             hovered.IsPointOver = true;
         }
 
-        public void DuplicateSelected()
+        public void DuplicateSelected(GLContext context)
         {
             var selected = this.GetSelectedPoints().ToList();
             foreach (var srcPt in selected)
@@ -610,18 +615,18 @@ namespace GLFrameworkEngine
                 dstPt.Transform.Scale = srcPt.Transform.Scale;
                 dstPt.Transform.UpdateMatrix(true);
 
-                srcPt.AddChild(dstPt);
+                srcPt.AddChild(dstPt, true);
 
-                PrepareSelectNewPoint(dstPt, false);
+                PrepareSelectNewPoint(context, dstPt, false);
             }
         }
 
-        public void ExtrudePointsFromSelected(bool connectLast = false, bool spawnAtMouse = false)
+        public virtual void ExtrudePointsFromSelected(GLContext context, bool connectLast = false, bool spawnAtMouse = false)
         {
             //For rail and bezier types
             if (InterpolationMode == Interpolation.Bezier || AutoConnectByNext)
             {
-                ExtrudeBezierPointsFromSelected(spawnAtMouse);
+                ExtrudeBezierPointsFromSelected(context, spawnAtMouse);
                 return;
             }
 
@@ -637,9 +642,7 @@ namespace GLFrameworkEngine
             var selected = PathPoints.LastOrDefault(x => x.IsSelected);
             var lastPoint = PathPoints.LastOrDefault();
 
-            var context = GLContext.ActiveContext;
-
-            Vector3 position = EditorUtility.GetObjectPlacementPosition();
+            Vector3 position = EditorUtility.GetObjectPlacementPosition(context);
 
             //Add the new point
             var point = CreatePoint(position);
@@ -671,24 +674,24 @@ namespace GLFrameworkEngine
 
             AddPoint(point);
 
-            PrepareSelectNewPoint(point, parent != null);
+            PrepareSelectNewPoint(context, point, parent != null);
         }
 
         /// <summary>
         /// Adds a single point with no connection. Added object is added to an undo stack.
         /// </summary>
-        public RenderablePathPoint AddSinglePoint(bool undo = true)
+        public RenderablePathPoint AddSinglePoint(GLContext context, bool undo = true)
         {
-            Vector3 position = EditorUtility.GetObjectPlacementPosition();
+            Vector3 position = EditorUtility.GetObjectPlacementPosition(context);
 
             //Add the new point
             var point = CreatePoint(position);
             AddPoint(point);
-            PrepareSelectNewPoint(point, false, undo);
+            PrepareSelectNewPoint(context, point, false, undo);
             return point;
         }
 
-        public void ExtrudeBezierPointsFromSelected(bool connectSelected = false)
+        public void ExtrudeBezierPointsFromSelected(GLContext context, bool connectSelected = false)
         {
             if (!EditMode)
                 return;
@@ -698,7 +701,7 @@ namespace GLFrameworkEngine
             if (!connectSelected)
                 parent = GetSelectedPoints().LastOrDefault();
 
-            Vector3 position = EditorUtility.GetObjectPlacementPosition();
+            Vector3 position = EditorUtility.GetObjectPlacementPosition(context);
 
             //Add the new point
             var point = CreatePoint(position);
@@ -728,13 +731,11 @@ namespace GLFrameworkEngine
                 point.UpdateMatrices();
             }
 
-            PrepareSelectNewPoint(point, parent != null);
+            PrepareSelectNewPoint(context, point, parent != null);
         }
 
-        private void PrepareSelectNewPoint(RenderablePathPoint point, bool moveSelected, bool undo = true)
+        private void PrepareSelectNewPoint(GLContext context, RenderablePathPoint point, bool moveSelected, bool undo = true)
         {
-            var context = GLContext.ActiveContext;
-
             //Only select the new point
             DeselectAll();
             point.IsSelected = true;
@@ -767,9 +768,8 @@ namespace GLFrameworkEngine
 
         #endregion
 
-        private object GetHovered()
+        private object GetHovered(GLContext context)
         {
-            var context = GLContext.ActiveContext;
             var pickable = this.PathPoints.Where(x => !x.IsSelected).Cast<ITransformableObject>().ToList();
             pickable.Add(this);
 
@@ -779,18 +779,16 @@ namespace GLFrameworkEngine
                  new Vector2(context.CurrentMousePoint.X, context.Height - context.CurrentMousePoint.Y));
         }
 
-        public virtual RenderablePathPoint GetHoveredPoint()
+        public virtual RenderablePathPoint GetHoveredPoint(GLContext context)
         {
-            var context = GLContext.ActiveContext;
             //hovered points
             return context.RayPicker.FindPickableAtPosition(
                  context, this.PathPoints.Where(x => !x.IsSelected).Cast<IRayCastPicking>().ToList(),
                  new Vector2(context.CurrentMousePoint.X, context.Height - context.CurrentMousePoint.Y)) as RenderablePathPoint;
         }
 
-        private bool IsPointHovered(RenderablePathPoint point)
+        private bool IsPointHovered(GLContext context, RenderablePathPoint point)
         {
-            var context = GLContext.ActiveContext;
             //hovered points
             return context.RayPicker.HasIntersection(context, point,
                  new Vector2(context.CurrentMousePoint.X, context.Height - context.CurrentMousePoint.Y));

@@ -48,6 +48,8 @@ namespace GLFrameworkEngine
                 }
                 info.Point.IsSelected = true;
             }
+
+
             return revert;
         }
 
@@ -293,7 +295,15 @@ namespace GLFrameworkEngine
             var revert = new RevertableDelPointCollection(infos);
             foreach (var info in Points) 
                 info.ParentPath.RemovePoint(info.Point);
-            
+
+            if (Points.Count > 0)
+            {
+                var path = Points[0].ParentPath;
+                path.RemovedSelectedCallback?.Invoke(path, EventArgs.Empty);
+            }
+
+            GLContext.ActiveContext.TransformTools.Clear();
+
             return revert;
         }
 

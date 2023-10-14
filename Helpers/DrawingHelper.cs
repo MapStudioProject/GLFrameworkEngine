@@ -198,7 +198,15 @@ namespace GLFrameworkEngine
                 vertices.Add(new VertexPositionNormal() { Position = p2 });
             }
 
-            return vertices.ToArray();
+            var normals = CalculateNormals(vertices.Select(x => x.Position).ToList());
+            for (int i = 0; i < normals.Length; i++)
+                vertices[i] = new VertexPositionNormal()
+                {
+                    Position = vertices[i].Position,
+                    Normal = normals[i],
+                };
+
+                return vertices.ToArray();
         }
 
         public static VertexPositionNormal[] GetConeVertices(float radiusBottom, float radiusTop, float height, float slices, float startHeight = 0)

@@ -44,6 +44,11 @@ namespace GLFrameworkEngine
         public EventHandler TransformChanged;
 
         /// <summary>
+        /// An event for when the transform has been changed.
+        /// </summary>
+        public EventHandler TransformListChanged;
+
+        /// <summary>
         /// An event for when the transform mode (scale, rotation, translation) has changed.
         /// </summary>
         public EventHandler TransformModeChanged;
@@ -104,14 +109,16 @@ namespace GLFrameworkEngine
                 ActiveTransforms.Remove(ob.Transform);
             if (objects.Contains(ob))
                 objects.Remove(ob);
+
+            TransformListChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void Clear()
         {
-            objects.Clear();
-            ActiveActions.Clear();
-            PreviousTransforms.Clear();
-            ActiveTransforms.Clear();
+            ActiveActions?.Clear();
+            PreviousTransforms?.Clear();
+            ActiveTransforms?.Clear();
+            TransformListChanged?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -120,6 +127,11 @@ namespace GLFrameworkEngine
         public void InitAction(List<ITransformableObject> objects)
         {
             this.objects = objects;
+            if (objects.Count == 0)
+            {
+                this.Clear();
+                return;
+            }
 
             PreviousTransforms.Clear();
             ActiveTransforms.Clear();
@@ -131,12 +143,16 @@ namespace GLFrameworkEngine
                 ActiveTransforms.Add(ob.Transform);
             }
 
+            TransformSettings.IgnoreY = ActiveTransforms.Any(x => x.IgnoreY);
+
             UpdateBoundingBox();
             UpdateTransformMode(ActiveMode);
 
             if (objects.Count == 0) {
                 ActiveActions.Clear();
             }
+
+            TransformListChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void UpdateBoundingBox()
@@ -200,6 +216,9 @@ namespace GLFrameworkEngine
 
             UpdateTransformMode(action);
             StartAction(context, action);
+
+            if (context.Camera.Is2D && action == TransformActions.Rotate)
+                UpdateAxis(context, Axis.Y);
         }
 
         /// <summary>
@@ -369,10 +388,17 @@ namespace GLFrameworkEngine
                 if (action.Axis == Axis.None)
                     continue;
 
+                //Force XZ movement if any transform selected is to ignore the Y axis
+                if (!context.Camera.Is2D && TransformSettings.IgnoreY && action.Axis == Axis.All)
+                {
+                    TransformSettings.ActiveAxis = Axis.XZ;
+                    action.Axis = Axis.XZ;
+                }
+
                 int value = action.TransformChanged(context, e.X, e.Y, TransformSettings);
                 if (value == 1 && !_transformChanged)
                 {
-                    GLContext.ActiveContext.Scene.BeginUndoCollection();
+                    context.Scene.BeginUndoCollection();
 
                     foreach (var transform in ActiveTransforms)
                         transform.TransformStarted?.Invoke(this, EventArgs.Empty);
@@ -383,7 +409,7 @@ namespace GLFrameworkEngine
 
                     //Only drop to collision when the transform is moving on all axis.
                     TransformSettings.CollisionDetect = false;
-                    if (TransformSettings.ActiveAxis == Axis.All)
+                    if (TransformSettings.ActiveAxis == Axis.All && !TransformSettings.IgnoreY)
                         TransformSettings.CollisionDetect = context.EnableDropToCollision;
 
                     IsActive = true;
@@ -393,14 +419,15 @@ namespace GLFrameworkEngine
                     //Transform changed once, create an undo operation
                     UpdateUndoHandler(context.Scene);
 
-                    GLContext.ActiveContext.Scene.EndUndoCollection();
+                    context.Scene.EndUndoCollection();
                 }
                 if (value == 1)
                 {
                     //Apply the transformation for viewing
-                    action.ApplyTransform(PreviousTransforms, ActiveTransforms);
+                    action.ApplyTransform(context, PreviousTransforms, ActiveTransforms);
                     UpdateBoundingBox();
                     TransformChanged?.Invoke(this, EventArgs.Empty);
+                    GLContext.ActiveContext.UpdateViewport = true;
                 }
             }
             return 1;
@@ -409,11 +436,11 @@ namespace GLFrameworkEngine
         /// <summary>
         /// Applies the current transformation for the active action.
         /// </summary>
-        public void ApplyTransform()
+        public void ApplyTransform(GLContext context)
         {
             foreach (var action in ActiveActions)
             {
-                action.ApplyTransform(PreviousTransforms, ActiveTransforms);
+                action.ApplyTransform(context, PreviousTransforms, ActiveTransforms);
                 UpdateBoundingBox();
                 TransformChanged?.Invoke(this, EventArgs.Empty);
             }
@@ -427,7 +454,7 @@ namespace GLFrameworkEngine
             {
                 infos[i] = new TransformInfo(ActiveTransforms[i]);
             }
-            scene.AddToUndo(new TransformUndo(infos));
+            scene.AddToUndo(new TransformUndo(this, infos));
         }
 
         public int OnMouseUp(GLContext context, MouseEventInfo e)
@@ -435,7 +462,7 @@ namespace GLFrameworkEngine
             if (ActiveActions.Count == 0)
                 return 0;
 
-            foreach (var transform in ActiveTransforms)
+            foreach (var transform in ActiveTransforms.ToList())
                 transform.TransformActionApplied?.Invoke(this, EventArgs.Empty);
 
             TransformSettings.ActiveAxis = Axis.None;
@@ -448,6 +475,8 @@ namespace GLFrameworkEngine
             TransformSettings.TextInput = 0.0f;
             TransformSettings.HasTextInput = false;
             textInput = "";
+
+            ReloadPreviousTransforms();
 
             TransformSettings.Origin = CalculateGizmoOrigin();
 
@@ -544,9 +573,12 @@ namespace GLFrameworkEngine
             List<Vector3> points = new List<Vector3>();
             foreach (var ob in ActiveTransforms)
                 points.Add(ob.Origin);
-
             BoundingBox.CalculateMinMax(points.ToArray(), out Vector3 min, out Vector3 max);
-            return (min + max) * 0.5f;
+            Vector3 origin = (min + max) * 0.5f;
+            if (!this.TransformSettings.UseY)
+                origin.Y = 0;
+
+            return origin;
         }
 
         private bool snapSetting;
@@ -638,8 +670,11 @@ namespace GLFrameworkEngine
             if (ActiveTransforms.Count == 0)
                 return;
 
+            UpdateBoundingBox();
+
             //Scale from camera position
             TransformSettings.GizmoScale = context.Camera.ScaleByCameraDistance(TransformSettings.Origin, TransformSettings.GizmoSize);
+            TransformSettings.GizmoScale = MathF.Max(TransformSettings.GizmoScale, TransformSettings.MinGizmoSize);
 
             Quaternion rotation = Quaternion.Identity;
             //Rotate the gizmo from the last selected transform
@@ -698,6 +733,8 @@ namespace GLFrameworkEngine
                     TransformSettings.UseY,
                     TransformSettings.UseZ,
                 };
+                if (action is RotateAction && context.Camera.Is2D)
+                    display = new bool[3] { true, true, true, };
 
                 //Draw the gizmo depending on the current action
                 if (action is TranslateAction)

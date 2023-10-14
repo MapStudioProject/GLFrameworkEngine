@@ -19,6 +19,8 @@ namespace GLFrameworkEngine
         /// </summary>
         public BoundingBox ModelBounding = null;
 
+        public bool IgnoreY = false;
+
         public bool EnableCollisionDrop = true;
 
         public bool IndividualPivot = false;
@@ -47,7 +49,11 @@ namespace GLFrameworkEngine
             get { return _position; }
             set
             {
-                _position = value;
+                if (IgnoreY)
+                    _position = new Vector3(value.X, _position.Y, value.Z);
+                else
+                    _position = value;
+
                 //Origin shares the position unless overidden
                 if (!originOverride)
                     Origin = value;

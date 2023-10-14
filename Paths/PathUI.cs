@@ -87,7 +87,7 @@ namespace GLFrameworkEngine
                 {
                     if (Point.IsSelected != value) {
                         Point.IsSelected = value;
-                        GLContext.ActiveContext.Scene.OnSelectionChanged(GLContext.ActiveContext);
+                        GLContext.ActiveContext.Scene.OnSelectionChanged(GLContext.ActiveContext, Point);
                         OnSelected?.Invoke(this, EventArgs.Empty);
                     }
                 }

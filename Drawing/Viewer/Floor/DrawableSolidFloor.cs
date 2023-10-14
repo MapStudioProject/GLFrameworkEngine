@@ -13,6 +13,8 @@ namespace GLFrameworkEngine
         /// </summary>
         public static bool Display = true;
 
+        public static float Height = 0f;
+
         /// <summary>
         /// The texture to display on the solid floor.
         /// </summary>
@@ -29,15 +31,20 @@ namespace GLFrameworkEngine
 
         static VertexPositionTexCoord[] Vertices => new VertexPositionTexCoord[]
         {
-               new VertexPositionTexCoord(new Vector3(1.0f, 0, 1.0f) * SCALE, new Vector2(0, 1)),
-               new VertexPositionTexCoord(new Vector3(1.0f, 0,-1.0f) * SCALE, new Vector2(0, 0)),
-               new VertexPositionTexCoord(new Vector3(-1.0f,0, 1.0f) * SCALE, new Vector2(1, 1)),
-               new VertexPositionTexCoord(new Vector3(-1.0f,0,-1.0f) * SCALE, new Vector2(1, 0)),
+               new VertexPositionTexCoord(new Vector3(1.0f, Height, 1.0f) * SCALE, new Vector2(0, 1)),
+               new VertexPositionTexCoord(new Vector3(1.0f, Height,-1.0f) * SCALE, new Vector2(0, 0)),
+               new VertexPositionTexCoord(new Vector3(-1.0f,Height, 1.0f) * SCALE, new Vector2(1, 1)),
+               new VertexPositionTexCoord(new Vector3(-1.0f,Height,-1.0f) * SCALE, new Vector2(1, 0)),
         };
 
         public void SetImage(string filePath) {
             if (System.IO.File.Exists(filePath))
                 Texture = GLTexture2D.FromBitmap(filePath);
+        }
+
+        public void Update()
+        {
+            this.UpdateVertexData(Vertices);
         }
 
         public void Draw(GLContext control, Pass pass)

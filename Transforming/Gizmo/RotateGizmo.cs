@@ -128,7 +128,7 @@ namespace GLFrameworkEngine
 
             if (displayGizmo)
             {
-                GL.Enable(EnableCap.LineSmooth);
+             //   GL.Enable(EnableCap.LineSmooth);
                 GL.LineWidth(5);
                 GL.PushAttrib(AttribMask.DepthBufferBit);
 
@@ -153,6 +153,7 @@ namespace GLFrameworkEngine
                     GizmoCenterRender.Draw(context, position, scale, new Vector4(1));
             }
             GL.LineWidth(1);
+            GL.Disable(EnableCap.LineSmooth);
 
             context.CurrentShader = null;
             GL.Enable(EnableCap.DepthTest);

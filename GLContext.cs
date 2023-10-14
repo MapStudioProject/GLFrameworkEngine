@@ -317,7 +317,6 @@ namespace GLFrameworkEngine
             //Set a saved mouse point to use in the application
             CurrentMousePoint = new Vector2(e.X, e.Y);
 
-            SelectionTools.OnMouseMove(this, e);
             Scene.OnMouseMove(this, e);
             LinkingTools.OnMouseMove(this, e);
             BoxCreationTool.OnMouseMove(this, e);
@@ -341,6 +340,8 @@ namespace GLFrameworkEngine
                 Camera.Controller.MouseMove(e, k, _previousPosition);
                 _previousPosition = new OpenTK.Vector2(e.X, e.Y);
             }
+
+            SelectionTools.OnMouseMove(this, e);
 
             PickingTools.OnMouseMove(this, e);
         }
@@ -407,9 +408,11 @@ namespace GLFrameworkEngine
 
             _previousPosition = new OpenTK.Vector2(e.X, e.Y);
 
-            SelectionTools.OnMouseDown(this, e);
             LinkingTools.OnMouseDown(this, e);
             BoxCreationTool.OnMouseDown(this, e);
+
+            if (SelectionTools.IsActive)
+                SelectionTools.OnMouseDown(this, e);
 
             if (!TransformTools.Enabled || SelectionTools.IsActive || 
                 LinkingTools.IsActive || BoxCreationTool.IsActive) //Skip picking, transforming and camera events for selection tools
@@ -428,6 +431,7 @@ namespace GLFrameworkEngine
                 return;
             }
 
+            SelectionTools.OnMouseDown(this, e);
             PickingTools.OnMouseDown(this, e);
             Camera.Controller.MouseClick(e, k);
         }

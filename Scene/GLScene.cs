@@ -101,7 +101,7 @@ namespace GLFrameworkEngine
 
         public void RemoveRenderObject(IDrawable render, bool undoOperation = false) {
             if (undoOperation)
-                AddToUndo(new EditableObjectAddUndo(this, new List<IDrawable>() { render }));
+                AddToUndo(new EditableObjectDeletedUndo(this, new List<IDrawable>() { render }));
 
             Objects.Remove(render);
             GLContext.ActiveContext.UpdateViewport = true;
@@ -125,11 +125,16 @@ namespace GLFrameworkEngine
 
         public void DeselectAll(GLContext context)
         {
+            var selected = GetSelected();
             foreach (var obj in GetSelectableObjects())
             {
                 obj.IsSelected = false;
                 obj.IsHovered = false;
             }
+
+            //Remove properties if selected was present
+            if (selected.Count > 0)
+                SelectionUIChanged?.Invoke(null, EventArgs.Empty);
 
             OnSelectionChanged(context);
         }
@@ -141,23 +146,22 @@ namespace GLFrameworkEngine
 
             if (pickable != null && pickable.CanSelect && pickable is IRenderNode)
                 SelectionUIChanged?.Invoke(((IRenderNode)pickable).UINode, EventArgs.Empty);
-            if (pickable == null || !pickable.CanSelect)
-                SelectionUIChanged?.Invoke(null, EventArgs.Empty);
+          //  if (pickable == null || !pickable.CanSelect)
+             //   SelectionUIChanged?.Invoke(null, EventArgs.Empty);
 
             SelectionTransformableChanged?.Invoke(pickable, EventArgs.Empty);
-
+            
             OnSelectionChanged(context);
         }
 
         public void OnSelectionChanged(GLContext context)
         {
-            SelectionChanged?.Invoke(this, EventArgs.Empty);
+            var selected = GetSelected();
+            //if (selected.Count == 0)
+              //  SelectionUIChanged?.Invoke(null, EventArgs.Empty);
 
-            if (GetSelected().Count > 0) {
-                context.TransformTools.InitAction(GetSelected());
-            }
-            else
-                context.TransformTools.ActiveActions.Clear();
+            SelectionChanged?.Invoke(this, EventArgs.Empty);
+            context.TransformTools.InitAction(selected);
 
             context.UpdateViewport = true;
         }
@@ -171,7 +175,7 @@ namespace GLFrameworkEngine
                 SetCursor(context, e.X, e.Y, false); //Update the mouse cursor but don't use mouse depth.
 
             foreach (IDrawableInput ob in Objects.Where(x => x is IDrawableInput))
-                ob.OnMouseDown(e);
+                ob.OnMouseDown(context, e);
         }
 
         public void OnMouseMove(GLContext context, MouseEventInfo e)
@@ -185,13 +189,13 @@ namespace GLFrameworkEngine
             }*/
 
             foreach (IDrawableInput ob in Objects.Where(x => x is IDrawableInput))
-                ob.OnMouseMove(e);
+                ob.OnMouseMove(context, e);
         }
 
         public void OnMouseUp(GLContext context, MouseEventInfo e)
         {
             foreach (IDrawableInput ob in Objects.Where(x => x is IDrawableInput))
-                ob.OnMouseUp(e);
+                ob.OnMouseUp(context, e);
         }
 
         public ITransformableObject FindPickableAtPosition(GLContext context, Vector2 point) {

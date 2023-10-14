@@ -90,7 +90,7 @@ namespace GLFrameworkEngine
             //Create marker to spawn the corners of the box
             if (BoxState == State.None)
             {
-                marker.SetCursor();
+                marker.SetCursor(context);
                 marker.DrawModel(context, Pass.OPAQUE);
             }
             else //Draw the vertices of the box itself (in lines)
@@ -102,7 +102,7 @@ namespace GLFrameworkEngine
                 var rotMtx = new Matrix4(Rotation);
 
                 var mat = new StandardMaterial();
-                mat.Color = GLConstants.SelectColor;
+                mat.Color = new Vector4(GLConstants.SelectColor.Xyz, 1f);
                 mat.ModelMatrix = scaleMtx * rotMtx * transMtx;
                 mat.Render(context);
 
@@ -119,7 +119,7 @@ namespace GLFrameworkEngine
 
             //Start box action if not started yet
             if (BoxState == State.None)
-                Start();
+                Start(context);
             else if (BoxState == State.CreateWidth)
             {
                 //Previous movement
@@ -151,9 +151,9 @@ namespace GLFrameworkEngine
             offset = Vector3.Zero;
         }
 
-        public void Start()
+        public void Start(GLContext context)
         {
-            marker.SetCursor();
+            marker.SetCursor(context);
 
             //Previous movement
             previousPosition = Vector3.Zero;

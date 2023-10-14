@@ -127,9 +127,8 @@ namespace GLFrameworkEngine
             return 1;
         }
 
-        public void ApplyTransform(List<GLTransform> previousTransforms, List<GLTransform> adjustedTransforms)
+        public void ApplyTransform(GLContext context, List<GLTransform> previousTransforms, List<GLTransform> adjustedTransforms)
         {
-            var context = GLContext.ActiveContext;
             var settings = context.TransformTools.TransformSettings;
             var rayCaster = context.CollisionCaster;
 

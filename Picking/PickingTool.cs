@@ -106,10 +106,13 @@ namespace GLFrameworkEngine
             {
                 if (!(pickable != null && !pickable.CanSelect))
                     context.Scene.OnSelectionChanged(context, pickable);
+                else
+                    context.Scene.OnSelectionChanged(context, null);
 
                 //Update the transform handler 
-                if (context.TransformTools.ActiveActions.Count > 0)
+                if (context.TransformTools.ActiveActions.Count > 0) {
                     context.TransformTools.OnMouseDown(context, e, true);
+                }
             }
 
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);

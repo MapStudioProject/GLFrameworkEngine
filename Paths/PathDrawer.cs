@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using Toolbox.Core;
@@ -8,6 +9,8 @@ namespace GLFrameworkEngine
 {
     public partial class RenderablePath : IDrawable, IEditModeObject, IColorPickable, ITransformableObject
     {
+        public static float PathDisplaySliceCount = 16;
+
         StandardMaterial LineMaterial = new StandardMaterial();
         LineRender PickingLineRender;
         EventHandler PickingChanged;
@@ -46,7 +49,7 @@ namespace GLFrameworkEngine
 
             var mat = new StandardMaterial();
             mat.Render(context);
-            DrawPointTool.Draw(points, true);
+            DrawPointTool.Draw(context, points, true);
         }
 
         private void DrawLinePicking(GLContext context)
@@ -74,7 +77,7 @@ namespace GLFrameworkEngine
             mat.displayOnlyVertexColors = true;
             mat.Render(context);
 
-            PickingLineRender.Draw(points, colors, true);
+            PickingLineRender.Draw(context, points, colors, true);
 
             GL.LineWidth(1);
         }
@@ -106,13 +109,23 @@ namespace GLFrameworkEngine
 
         public virtual void DrawModel(GLContext context, Pass pass)
         {
+            foreach (var pathPoint in PathPoints)
+                pathPoint.CameraScale = context.Camera.ScaleByCameraDistance(pathPoint.Transform.Position);
+
             if (EditMode && EditToolMode == ToolMode.Drawing)
                 DrawLineTool(context);
 
             if (XRayMode)
             {
-                GL.Clear(ClearBufferMask.DepthBufferBit);
-                GL.Enable(EnableCap.DepthTest);
+                GL.Disable(EnableCap.DepthTest);
+            }
+
+            if (pass == Pass.OPAQUE)
+            {
+                DrawLineDisplay(context);
+
+                if (EditMode && InterpolationMode == Interpolation.Linear)
+                    DrawArrowDisplay(context);
             }
 
             if (EditMode)
@@ -132,16 +145,8 @@ namespace GLFrameworkEngine
                 {
                     if (OriginRenderer == null) OriginRenderer = new SphereRender(1);
 
-                    OriginRenderer.DrawSolidWithSelection(context, Transform.TransformMatrix, Vector4.One, IsSelected || IsHovered);
+                    OriginRenderer.DrawSolidWithSelection(context, Transform.TransformMatrix, Vector4.One, false);
                 }
-            }
-
-            if (pass == Pass.OPAQUE)
-            {
-                DrawLineDisplay(context);
-
-                if (EditMode && InterpolationMode == Interpolation.Linear)
-                    DrawArrowDisplay(context);
             }
 
             if (XRayMode)
@@ -152,6 +157,7 @@ namespace GLFrameworkEngine
                 GL.DepthMask(true);
             }
         }
+
 
         public virtual void DrawLineDisplay(GLContext context, bool picking = false)
         {
@@ -195,6 +201,14 @@ namespace GLFrameworkEngine
                     }
                 }
             }
+            DrawLines(context, points, handles, picking);
+        }
+
+        public void DrawLines(GLContext context,
+            List<Vector3> points,
+            List<Vector3> handles,
+            bool picking = false)
+        {
 
             //Prepare renderers
             if (LineRenderer == null)
@@ -215,7 +229,7 @@ namespace GLFrameworkEngine
                 LineMaterial.Color = LineColor;
 
                 if ((IsSelected || IsHovered) && !EditMode)
-                    LineMaterial.Color = GLConstants.SelectColor;
+                    LineMaterial.Color = new Vector4(GLConstants.SelectColor.Xyz, 1f);
 
                 LineMaterial.Render(context);
             }
@@ -234,7 +248,7 @@ namespace GLFrameworkEngine
 
                 LineRenderer.UpdatePrimitiveType(PrimitiveType.LineStrip);
                 if (points.Count > 0)
-                    LineRenderer.Draw(points, new List<Vector4>(), true);
+                    LineRenderer.Draw(context, points, new List<Vector4>(), true);
 
                 if (EditMode)
                 {
@@ -264,20 +278,20 @@ namespace GLFrameworkEngine
                     }
 
                     if (arrowPoints.Count > 0)
-                        BezierLineArrowRenderer.Draw(arrowPoints, new List<Vector4>(), true);
+                        BezierLineArrowRenderer.Draw(context, arrowPoints, new List<Vector4>(), true);
                 }
             }
             else
             {
                 if (points.Count > 0)
-                    LineRenderer.Draw(points, new List<Vector4>(), true);
+                    LineRenderer.Draw(context, points, new List<Vector4>(), true);
             }
 
             LineMaterial.Color = new Vector4(0.7f, 0, 0, 1);
             LineMaterial.Render(context);
 
             if (handles.Count > 0)
-                LineHandleRenderer.Draw(handles, new List<Vector4>(), true);
+                LineHandleRenderer.Draw(context, handles, new List<Vector4>(), true);
 
             //DrawNormals(context);
 
@@ -305,7 +319,7 @@ namespace GLFrameworkEngine
 
             LineMaterial.Color = new Vector4(1, 1, 0, 1);
             LineMaterial.Render(context);
-            LineHandleRenderer.Draw(normals, new List<Vector4>(), true);
+            LineHandleRenderer.Draw(context, normals, new List<Vector4>(), true);
         }
 
         public virtual void DrawArrowDisplay(GLContext context)
@@ -344,18 +358,19 @@ namespace GLFrameworkEngine
             var rot = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(90));
             //Offset the arrow slightly from it's position
             Matrix4 offsetMat = Matrix4.CreateTranslation(new Vector3(0, 0, -25));
-            Matrix4 translateMat = Matrix4.CreateTranslation(nextPt.Transform.Position);
+            Vector3 lineOffset = new Vector3(0, LineOffset, 0);
+            Matrix4 translateMat = Matrix4.CreateTranslation(nextPt.Transform.Position + lineOffset);
 
             if (IsArrowCentered)
             {
                 offsetMat = Matrix4.Identity;
                 //Use the center point between the distance
-                translateMat = Matrix4.CreateTranslation((point.Transform.Position + (dist / 2f)));
+                translateMat = Matrix4.CreateTranslation((point.Transform.Position + (dist / 2f)) + lineOffset);
             }
 
             //Load the cone render
             if (ConeRenderer == null)
-                ConeRenderer = new ConeRenderer(10, 2, 15, 32);
+                ConeRenderer = new ConeRenderer(10, 2, 15, PathDisplaySliceCount);
 
             //Draw the cone with a solid shader
             Matrix4 modelMatrix = offsetMat * Matrix4.CreateScale(scale) * rotation * translateMat;

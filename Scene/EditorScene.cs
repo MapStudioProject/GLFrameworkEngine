@@ -29,7 +29,7 @@ namespace GLFrameworkEngine
                 if (e.IsKeyDown(InputSettings.INPUT.Scene.SelectAll))
                     SelectAll(context);
                 if (e.IsKeyDown(InputSettings.INPUT.Scene.EditMode))
-                    ToggleEditMode();
+                    ToggleEditMode(context);
                 if (e.IsKeyDown(InputSettings.INPUT.Scene.Copy))
                     CopySelected();
                 if (e.IsKeyDown(InputSettings.INPUT.Scene.Paste))
@@ -44,7 +44,7 @@ namespace GLFrameworkEngine
                 }
 
                 foreach (IDrawableInput ob in Objects.Where(x => x is IDrawableInput))
-                    ob.OnKeyDown(e);
+                    ob.OnKeyDown(context, e);
             }
         }
 
@@ -81,7 +81,7 @@ namespace GLFrameworkEngine
         public void PasteSelected()
         {
             if (copiedObjects.Count > 0)
-                GLContext.ActiveContext.Scene.AddToUndo(new EditableObjectAddUndo(this, copiedObjects));
+                this.AddToUndo(new EditableObjectAddUndo(this, copiedObjects));
 
             foreach (var obj in copiedObjects)
             {
@@ -93,12 +93,16 @@ namespace GLFrameworkEngine
         /// <summary>
         /// Toggles edit mode for an editable part object.
         /// </summary>
-        public void ToggleEditMode()
+        public void ToggleEditMode(GLContext context)
         {
+            EditModeObjects.Clear();
             foreach (var obj in this.GetSelectableObjects())
             {
                 if (obj is IEditModeObject)
                 {
+                    if (!((IEditModeObject)obj).CanToggleEditMode)
+                        continue;
+
                     bool editMode = ((IEditModeObject)obj).EditMode;
                     if (!editMode && obj.IsSelected)
                     {
@@ -113,7 +117,7 @@ namespace GLFrameworkEngine
                     }
                 }
             }
-            GLContext.ActiveContext.TransformTools.InitAction(GetSelected());
+            context.TransformTools.InitAction(GetSelected());
         }
 
         public void DisableEditMode(ITransformableObject obj)

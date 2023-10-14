@@ -119,14 +119,14 @@ namespace GLFrameworkEngine
             points.Add(bottom[i] + (top[i] - bottom[i]) * new Vector3(1, 0.5f, 1));
 
             GL.LineWidth(2);
-            LineRender.Draw(points, true);
+            LineRender.Draw(context, points, true);
 
             points.Clear();
             for (int i = 0; i < 4; i++)
                 points.Add(left[i] + (right[i] - left[i]) * new Vector3(0.5f, 1, 1));
 
             GL.LineWidth(2);
-            LineRender.Draw(points, true);
+            LineRender.Draw(context, points, true);
 
             GL.LineWidth(1);
         }

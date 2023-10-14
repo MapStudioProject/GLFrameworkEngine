@@ -11,11 +11,17 @@ namespace GLFrameworkEngine
         public bool UseY = true;
         public bool UseZ = true;
 
+        public bool IgnoreY = false;
 
         /// <summary>
         /// The initial gizmo size before being scaled by the camera distance.
         /// </summary>
         public float GizmoSize = 0.05f;
+
+        /// <summary>
+        /// The smallest size the gizmo can scale to by camera. 
+        /// </summary>
+        public float MinGizmoSize = 1.0f;
 
         /// <summary>
         /// The scale of the gizmo adjusted on the distance of the camera and gizmo itself.

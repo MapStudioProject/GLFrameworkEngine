@@ -39,6 +39,7 @@ namespace GLFrameworkEngine
                 {
                     _isSelected = value;
                     ParentPath.UpdateSelectionList(this, value);
+                    GLContext.ActiveContext.Scene.OnSelectionChanged(GLContext.ActiveContext, this);
                 }
             }
         }
@@ -80,7 +81,12 @@ namespace GLFrameworkEngine
 
         public virtual RenderablePathPoint Duplicate()
         {
-            return this.ParentPath.CreatePoint(Transform.Position);
+            var dstPt = this.ParentPath.CreatePoint(Transform.Position);
+
+            if (this.UINode.Tag is ICloneable)
+                dstPt.UINode.Tag = ((ICloneable)this.UINode.Tag).Clone();
+
+            return dstPt;
         }
 
         public virtual BoundingBox BoundingBox { get; }  = new BoundingBox(new Vector3(-0.5f), new Vector3(0.5f));
@@ -201,7 +207,7 @@ namespace GLFrameworkEngine
         public static SphereRender SphereRender;
 
         public static void Init() {
-            SphereRender = new SphereRender(1, 32);
+            SphereRender = new SphereRender(1, RenderablePath.PathDisplaySliceCount);
         }
 
         private TransformInfo PreviousTransform;
@@ -275,19 +281,24 @@ namespace GLFrameworkEngine
                 if (RenderablePath.DisplayPointSize && (Transform.Scale.X > 2 || Transform.Scale.Y > 2 || Transform.Scale.Z > 2))
                 {
                     Matrix4 boundingTransform = Matrix4.CreateScale(100) * Transform.TransformMatrix;
-                    DrawSizeSphere(context, boundingTransform, Pass.TRANSPARENT);
+                    DrawSizeSphere(context, IsHovered, IsSelected, boundingTransform, Pass.TRANSPARENT);
                 }
             }
         }
 
-        public virtual void DrawSizeSphere(GLContext context, Matrix4 matrix, Pass pass)
+        public virtual void DrawSizeSphere(GLContext context, bool hovered, bool selected, Matrix4 matrix, Pass pass)
         {
             GLMaterialBlendState.Translucent.RenderBlendState();
+            GLMaterialBlendState.Translucent.RenderDepthTest();
 
             Vector4 blockColor = new Vector4(1, 1, 0, 0.2f);
+            if (selected) blockColor *= 1.4f;
+            else if (hovered) blockColor *= 1.2f;
+
             SphereRender.DrawSolid(context, matrix, blockColor);
 
             GLMaterialBlendState.Opaque.RenderBlendState();
+            GLMaterialBlendState.Opaque.RenderDepthTest();
         }
 
         public void ResetTransformHandling()

@@ -11,6 +11,8 @@ namespace GLFrameworkEngine
     {
         IEnumerable<ITransformableObject> Selectables { get; }
 
+        bool CanToggleEditMode { get; set; }
+
         bool EditMode { get; set; }
     }
 }

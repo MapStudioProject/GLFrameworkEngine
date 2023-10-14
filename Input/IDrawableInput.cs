@@ -9,9 +9,9 @@ namespace GLFrameworkEngine
     /// </summary>
     public interface IDrawableInput
     {
-        void OnMouseDown(MouseEventInfo mouseInfo);
-        void OnMouseUp(MouseEventInfo mouseInfo);
-        void OnMouseMove(MouseEventInfo mouseInfo);
-        void OnKeyDown(KeyEventInfo keyInfo);
+        void OnMouseDown(GLContext context, MouseEventInfo mouseInfo);
+        void OnMouseUp(GLContext context, MouseEventInfo mouseInfo);
+        void OnMouseMove(GLContext context, MouseEventInfo mouseInfo);
+        void OnKeyDown(GLContext context, KeyEventInfo keyInfo);
     }
 }

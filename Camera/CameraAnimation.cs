@@ -128,7 +128,7 @@ namespace GLFrameworkEngine
             context.CurrentShader = shader;
             shader.SetVector4("color", color);
 
-            render.Draw(points, new List<Vector4>(), true);
+            render.Draw(context, points, new List<Vector4>(), true);
 
             context.CurrentShader = null;
         }

@@ -17,6 +17,6 @@ namespace GLFrameworkEngine
         int TransformChanged(GLContext context, float x, float y, TransformSettings settings);
         int FinishTransform();
 
-        void ApplyTransform(List<GLTransform> previousTransforms, List<GLTransform> adjustedTransforms);
+        void ApplyTransform(GLContext context, List<GLTransform> previousTransforms, List<GLTransform> adjustedTransforms);
     }
 }

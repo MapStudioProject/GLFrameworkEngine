@@ -11,6 +11,9 @@ namespace GLFrameworkEngine
     {
         public virtual string Name => $"Path {UINode.Index}";
 
+        public EventHandler OnSelected;
+        public EventHandler OnEditModeToggled;
+
         public bool IsActive = false;
 
         private bool _editMode = false;
@@ -21,14 +24,18 @@ namespace GLFrameworkEngine
             {
                 if (_editMode != value) {
                     _editMode = value;
+                    OnEditModeToggled?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
+
+        public virtual bool CanToggleEditMode { get; set; } = false;
 
         public GLTransform Transform { get; set; } = new GLTransform();
 
         public bool IsHovered { get; set; }
         public bool CanSelect { get; set; } = true;
+
 
         private bool isSelected;
         public bool IsSelected
@@ -41,7 +48,9 @@ namespace GLFrameworkEngine
             {
                 isSelected = value;
                 //Update the selection origin
-                if (value) {
+                if (value)
+                {
+                    OnSelected?.Invoke(this, EventArgs.Empty);
                     Transform.Position = CalculateOrigin();
                     Transform.UpdateMatrix(true);
                 }
@@ -249,6 +258,7 @@ namespace GLFrameworkEngine
                 SelectedPathPoints.Add(point);
             else
                 SelectedPathPoints.Remove(point);
+            GLContext.ActiveContext.Scene.OnSelectionChanged(GLContext.ActiveContext, point);
         }
 
         //Batch transform editing
@@ -423,22 +433,23 @@ namespace GLFrameworkEngine
 
         public virtual void AddPoint(RenderablePathPoint point, int index = -1)
         {
-            if (index != -1)
-            {
-                UINode.Children.Insert(index, point.UINode);
+            if (index != -1 && PathPoints.Count > index)
                 PathPoints.Insert(index, point);
-            }
             else
-            {
-                UINode.AddChild(point.UINode);
                 PathPoints.Add(point);
-            }
+
+            if (index != -1 && UINode.Children.Count > index)
+                UINode.Children.Insert(index, point.UINode);
+            else
+                UINode.AddChild(point.UINode);
 
             PointAddedCallback?.Invoke(point, EventArgs.Empty);
         }
 
         public virtual void OnPointAdded(RenderablePathPoint point)
         {
+            //Property UI update
+            GLContext.ActiveContext.Scene.SelectionUIChanged?.Invoke(point.UINode, EventArgs.Empty);
         }
 
         public void RemoveSelected()
@@ -450,11 +461,12 @@ namespace GLFrameworkEngine
             GLContext.ActiveContext.Scene.AddToUndo(new RevertableDelPointCollection(selected));
 
             foreach (var obj in selected)
-                RemovePointReferences(obj);
-            foreach (var obj in selected)
                 RemovePoint(obj);
 
             RemovedSelectedCallback?.Invoke(selected, EventArgs.Empty);
+
+            //Clear transforms present
+            GLContext.ActiveContext.TransformTools.Clear();
         }
 
         public virtual void RemovePoint(RenderablePathPoint point)

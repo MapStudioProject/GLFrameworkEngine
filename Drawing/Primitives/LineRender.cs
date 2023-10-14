@@ -58,16 +58,16 @@ namespace GLFrameworkEngine
             this.Draw(GLContext.ActiveContext);
         }
 
-        public void Draw(List<Vector3> points, bool forceUpdate = false) {
-            Draw(points, new List<Vector4>() { Vector4.One }, forceUpdate);
+        public void Draw(GLContext context, List<Vector3> points, bool forceUpdate = false) {
+            Draw(context, points, new List<Vector4>() { Vector4.One }, forceUpdate);
         }
 
-        public void Draw(List<Vector3> points, List<Vector4> colors, bool forceUpdate = false)
+        public void Draw(GLContext context, List<Vector3> points, List<Vector4> colors, bool forceUpdate = false)
         {
             if (length == 0 || forceUpdate)
                 UpdateVertexData(points, colors);
 
-            this.Draw(GLContext.ActiveContext);
+            this.Draw(context);
         }
 
 

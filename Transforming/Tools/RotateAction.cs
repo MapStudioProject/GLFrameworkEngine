@@ -145,12 +145,12 @@ namespace GLFrameworkEngine
             return 1;
         }
 
-        public void ApplyTransform(List<GLTransform> previousTransforms, List<GLTransform> adjustedTransforms)
+        public void ApplyTransform(GLContext context, List<GLTransform> previousTransforms, List<GLTransform> adjustedTransforms)
         {
             if (DeltaRotation == Quaternion.Identity)
                 return;
 
-            var transformTools = GLContext.ActiveContext.TransformTools;
+            var transformTools = context.TransformTools;
 
             //Update all transforms
             for (int i = 0; i < adjustedTransforms.Count; i++) {

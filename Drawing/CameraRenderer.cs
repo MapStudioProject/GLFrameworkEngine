@@ -26,10 +26,11 @@ namespace GLFrameworkEngine
         public CameraRenderer(Camera camera) :
             base(GetVertices(camera), Indices, PrimitiveType.Lines)
         {
-
+            Camera = camera;
         }
 
         public void Update(Camera camera) {
+            Camera = camera;
             this.UpdateVertexData(GetVertices(camera));
         }
 

@@ -20,6 +20,12 @@ namespace GLFrameworkEngine
         UVCubeRenderer CubeRenderer = null;
         StandardMaterial Material = new StandardMaterial();
 
+        //2D
+        SphereRender Sphere2DRenderer = null;
+        StandardMaterial Material2D = new StandardMaterial();
+        public Vector4 Color2D = new Vector4(1, 1, 1, 1);
+        public float MinScale2D = 1;
+
         public bool EnableFrustumCulling => true;
         public bool InFrustum { get; set; }
 
@@ -50,8 +56,14 @@ namespace GLFrameworkEngine
             UINode.Tag = this;
         }
 
-        public void DrawColorPicking(GLContext context)
+        public virtual void DrawColorPicking(GLContext context)
         {
+            if (context.Camera.Is2D)
+            {
+                DrawColorPicking2D(context);
+                return;
+            }
+
             Prepare();
 
             CubeRenderer.DrawPicking(context, this, Transform.TransformMatrix);
@@ -85,6 +97,42 @@ namespace GLFrameworkEngine
                 AxisObject.Transform = this.Transform;
                 AxisObject.DrawModel(context, Pass.OPAQUE);
             }
+        }
+
+        public virtual void DrawColorPicking2D(GLContext context)
+        {
+            if (Sphere2DRenderer == null)
+                Sphere2DRenderer = new SphereRender(10);
+
+            float scale = context.Camera.ScaleByCameraDistance(this.Transform.Position);
+            scale = MathF.Max(scale, MinScale2D);
+
+            var mat = Matrix4.CreateScale(scale) * Matrix4.CreateTranslation(this.Transform.Position);
+
+            Sphere2DRenderer.DrawPicking(context, this, mat);
+        }
+
+        public virtual void DrawModel2D(GLContext context)
+        {
+            if (!CanSelect)
+                return;
+
+            if (Sphere2DRenderer == null)
+                Sphere2DRenderer = new SphereRender(10);
+
+            float scale = context.Camera.ScaleByCameraDistance(this.Transform.Position);
+            scale = MathF.Max(scale, MinScale2D);
+            var color = IsSelected ? GLConstants.SelectColor : this.Color2D;
+            color.W = 1.0f;
+
+            GL.Disable(EnableCap.DepthTest);
+
+            Material2D.Color = color;
+            Material2D.ModelMatrix = Matrix4.CreateScale(scale) * Matrix4.CreateTranslation(this.Transform.Position);
+            Material2D.Render(context);
+            Sphere2DRenderer.Draw(context);
+
+            GL.Enable(EnableCap.DepthTest);
         }
 
         private void Prepare()

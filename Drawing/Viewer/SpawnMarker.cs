@@ -40,8 +40,8 @@ namespace GLFrameworkEngine
         /// <summary>
         /// Sets the cursor 3d position given the screen coordinates.
         /// </summary>
-        public void SetCursor(bool useMouseDepth = false) {
-            EditorUtility.SetObjectPlacementPosition(this.Transform, useMouseDepth);
+        public void SetCursor(GLContext context, bool useMouseDepth = false) {
+            EditorUtility.SetObjectPlacementPosition(context, this.Transform, useMouseDepth);
         }
 
         public void DrawModel(GLContext context, Pass pass)
@@ -49,7 +49,9 @@ namespace GLFrameworkEngine
             if (!IsVisible || pass != Pass.OPAQUE)
                 return;
 
-            Material.ModelMatrix = Transform.TransformMatrix;
+            float scale = context.Camera.Is2D ? 100f : 1f;
+
+            Material.ModelMatrix = Matrix4.CreateScale(scale) * Transform.TransformMatrix;
             Material.Color = new Vector4(1, 1, 1, 1);
             Material.Render(context);
 

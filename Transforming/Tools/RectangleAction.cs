@@ -115,7 +115,7 @@ namespace GLFrameworkEngine
             return ScaleFactor != Vector3.One ? 1 : 0;
         }
 
-        public void ApplyTransform(List<GLTransform> previousTransforms, List<GLTransform> adjustedTransforms)
+        public void ApplyTransform(GLContext context, List<GLTransform> previousTransforms, List<GLTransform> adjustedTransforms)
         {
             //Update all transforms
             for (int i = 0; i < adjustedTransforms.Count; i++)
@@ -151,8 +151,8 @@ namespace GLFrameworkEngine
                 }
                 transform.UpdateMatrix(true);
             }
-            GLContext.ActiveContext.TransformTools.UpdateOrigin();
-            GLContext.ActiveContext.TransformTools.UpdateBoundingBox();
+            context.TransformTools.UpdateOrigin();
+            context.TransformTools.UpdateBoundingBox();
         }
 
         public Vector3 GetOrigin(TransformEngine.Axis axis)
