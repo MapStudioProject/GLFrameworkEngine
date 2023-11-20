@@ -92,13 +92,13 @@ namespace GLFrameworkEngine
 
         public unsafe static GLTexture ToArrayCopy(GLTexture texture)
         {
-            //Src
-            byte[] buffer = new byte[texture.Width * texture.Height * 4];
-
             var dest_format = PixelInternalFormat.Rgba;
 
             texture.Bind();
-            GL.GetTexImage(texture.Target, 0, texture.PixelFormat, texture.PixelType, buffer);
+
+            //Src
+            byte[] buffer = new byte[texture.Width * texture.Height * 4];
+            GL.GetTexImage(texture.Target, 0, PixelFormat.Rgba, PixelType.UnsignedByte, buffer);
 
             //Use srgb if enabled
             if (texture.PixelInternalFormat == PixelInternalFormat.SrgbAlpha)
