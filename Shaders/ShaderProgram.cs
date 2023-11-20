@@ -28,6 +28,8 @@ namespace GLFrameworkEngine
         //Check if the shader was linked
         public bool LinkSucessful = false;
 
+        public Dictionary<string, ActiveUniformType> UniformTypeInfo = new Dictionary<string, ActiveUniformType>();
+
         // This isn't in OpenTK's enums for some reason.
         // https://www.khronos.org/registry/OpenGL/api/GL/glcorearb.h
         private static readonly int GL_PROGRAM_BINARY_MAX_LENGTH = 0x8741;
@@ -254,6 +256,9 @@ namespace GLFrameworkEngine
                 string name = GL.GetActiveUniform(program, i, out int size, out ActiveUniformType type);
                 if (string.IsNullOrEmpty(name))
                     continue;
+
+                if (!UniformTypeInfo.ContainsKey(name))
+                    UniformTypeInfo.Add(name, type);
 
                 int location = GL.GetUniformLocation(program, name);
                 // Overwrite existing vertex attributes.

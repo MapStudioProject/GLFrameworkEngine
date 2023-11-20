@@ -40,6 +40,8 @@ namespace GLFrameworkEngine
         public PixelFormat PixelFormat { get; internal set; }
         public PixelType PixelType { get; internal set; }
 
+        public List<GLTexture> SubTextures = new List<GLTexture>();
+
         public GLTexture() : base(GL.GenTexture())
         {
             Target = TextureTarget.Texture2D;
@@ -86,6 +88,46 @@ namespace GLFrameworkEngine
             GL.TexParameter(Target, TextureParameterName.TextureWrapS, (int)WrapS);
             GL.TexParameter(Target, TextureParameterName.TextureWrapT, (int)WrapT);
             GL.TexParameter(Target, TextureParameterName.TextureWrapR, (int)WrapR);
+        }
+
+        public unsafe static GLTexture ToArrayCopy(GLTexture texture)
+        {
+            //Src
+            byte[] buffer = new byte[texture.Width * texture.Height * 4];
+
+            var dest_format = PixelInternalFormat.Rgba;
+
+            texture.Bind();
+            GL.GetTexImage(texture.Target, 0, texture.PixelFormat, texture.PixelType, buffer);
+
+            //Use srgb if enabled
+            if (texture.PixelInternalFormat == PixelInternalFormat.SrgbAlpha)
+                dest_format = PixelInternalFormat.SrgbAlpha;
+
+
+            GLTexture tex = new GLTexture();
+            tex.Target = TextureTarget.Texture2DArray;
+            tex.Width = texture.Width;
+            tex.Height = texture.Height;
+            tex.MinFilter = texture.MinFilter;
+            tex.MagFilter = texture.MagFilter;
+            tex.PixelInternalFormat = dest_format;
+            tex.PixelFormat = PixelFormat.Rgba;
+            tex.PixelType = PixelType.UnsignedByte;
+
+            //Dst
+            tex.Bind();
+
+            //Copy
+            GL.TexImage3D(tex.Target, 0, tex.PixelInternalFormat, tex.Width, tex.Height, 1, 0,
+                      tex.PixelFormat, tex.PixelType, buffer);
+
+            GL.GenerateMipmap((GenerateMipmapTarget)tex.Target);
+
+            //unbind
+            tex.Unbind();
+
+            return tex;
         }
 
         public virtual void SaveDDS(string fileName)
