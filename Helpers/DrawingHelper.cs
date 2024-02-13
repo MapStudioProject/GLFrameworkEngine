@@ -174,6 +174,7 @@ namespace GLFrameworkEngine
                 vertices.Add(new VertexPositionNormal() { Position = new Vector3(p2.X, startHeight, p2.Z) });
                 vertices.Add(new VertexPositionNormal() { Position = new Vector3(p1.X, startHeight, p1.Z) });
 
+
                 p2 = discPointsTop[i % discPointsTop.Count];
                 p1 = discPointsTop[(i + 1) % discPointsTop.Count];
 

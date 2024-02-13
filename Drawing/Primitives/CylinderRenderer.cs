@@ -8,9 +8,9 @@ namespace GLFrameworkEngine
 {
     public class CylinderRenderer : RenderMesh<VertexPositionNormal>
     {
-        public CylinderRenderer(float radius, float startHeight, float height)
-            : base(DrawingHelper.GetCylinderVertices(radius, startHeight, height, 32),
-                  PrimitiveType.Triangles)
+        public CylinderRenderer(float radius, float startHeight, float height, float div = 32, PrimitiveType type = PrimitiveType.Triangles)
+            : base(DrawingHelper.GetCylinderVertices(radius, startHeight, height, div),
+                  type)
         {
 
         }

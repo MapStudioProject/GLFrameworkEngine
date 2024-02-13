@@ -768,7 +768,7 @@ namespace GLFrameworkEngine
 
         #endregion
 
-        private object GetHovered(GLContext context)
+        public virtual object GetHovered(GLContext context)
         {
             var pickable = this.PathPoints.Where(x => !x.IsSelected).Cast<ITransformableObject>().ToList();
             pickable.Add(this);
