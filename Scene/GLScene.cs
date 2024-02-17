@@ -235,7 +235,12 @@ namespace GLFrameworkEngine
 
                 if (obj is ISelectableContainer) {
                     foreach (var ob in ((ISelectableContainer)obj).Selectables)
+                    {
+                        if (ob is IDrawable && !((IDrawable)ob).IsVisible)
+                            continue;
+
                         transformables.Add(ob);
+                    }
                 }
                 if (obj is ITransformableObject)
                     transformables.Add((ITransformableObject)obj);
