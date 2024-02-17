@@ -12,6 +12,8 @@ namespace GLFrameworkEngine
     {
         public virtual string Name => $"Point {Index}";
 
+        public EventHandler SelectionChanged;
+
         /// <summary>
         /// The tree node attached to the point for the outliner.
         /// </summary>
@@ -41,6 +43,7 @@ namespace GLFrameworkEngine
                     ParentPath.UpdateSelectionList(this, value);
                     GLContext.ActiveContext.Scene.OnSelectionChanged(GLContext.ActiveContext, this);
                 }
+                SelectionChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 

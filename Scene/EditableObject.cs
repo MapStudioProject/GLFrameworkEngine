@@ -38,6 +38,7 @@ namespace GLFrameworkEngine
         public Func<bool> IsVisibleCallback;
 
         public EventHandler VisibilityChanged;
+        public EventHandler SelectedChanged;
 
         public virtual bool UsePostEffects { get; } = false;
 
@@ -57,10 +58,20 @@ namespace GLFrameworkEngine
         /// </summary>
         public virtual bool IsHovered { get; set; }
 
+        private bool _isSelected = false;
         /// <summary>
         /// Determines if the object is in a selected state or not.
         /// </summary>
-        public virtual bool IsSelected { get; set; }
+        public virtual bool IsSelected { 
+            get {
+                return _isSelected;
+            }
+            set
+            {
+                _isSelected = value;
+                SelectedChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
 
         /// <summary>
         /// Determines if the object can select or not.

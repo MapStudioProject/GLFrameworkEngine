@@ -37,9 +37,12 @@ namespace GLFrameworkEngine
                 {
                     if (Path.IsSelected != value) {
                         Path.IsSelected = value;
-                        base.IsSelected = value;
 
                         GLContext.ActiveContext.Scene.OnSelectionChanged(GLContext.ActiveContext);
+                    }
+                    if (base.IsSelected != value)
+                    {
+                        base.IsSelected = value;
                     }
                 }
             }
@@ -47,6 +50,10 @@ namespace GLFrameworkEngine
             public PathNode(RenderablePath path) {
                 Path = path;
                 HasCheckBox = true;
+                Path.OnSelectedChanged += (o, e) =>
+                {
+                    IsSelected = Path.IsSelected;
+                };
             }
 
             public override void OnDoubleClicked()
@@ -89,9 +96,12 @@ namespace GLFrameworkEngine
                 {
                     if (Point.IsSelected != value) {
                         Point.IsSelected = value;
-                        base.IsSelected = value;
 
                         GLContext.ActiveContext.Scene.OnSelectionChanged(GLContext.ActiveContext, Point);
+                    }
+                    if (base.IsSelected != value)
+                    {
+                        base.IsSelected = value;
                     }
                 }
             }
@@ -100,6 +110,10 @@ namespace GLFrameworkEngine
             {
                 Point = point;
                 HasCheckBox = true;
+                Point.SelectionChanged += (o, e) =>
+                {
+                    IsSelected = Point.IsSelected;
+                };
             }
 
             public override void OnDoubleClicked()
