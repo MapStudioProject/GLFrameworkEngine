@@ -12,6 +12,7 @@ namespace GLFrameworkEngine
         public virtual string Name => $"Path {UINode.Index}";
 
         public EventHandler OnSelected;
+        public EventHandler OnSelectedChanged;
         public EventHandler OnEditModeToggled;
 
         public bool IsActive = false;
@@ -54,6 +55,7 @@ namespace GLFrameworkEngine
                     Transform.Position = CalculateOrigin();
                     Transform.UpdateMatrix(true);
                 }
+                OnSelectedChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 

@@ -34,9 +34,12 @@ namespace GLFrameworkEngine
                 if (Object.IsSelected != value)
                 {
                     Object.IsSelected = value;
-                    base.IsSelected = value;
 
                     GLContext.ActiveContext.Scene.OnSelectionChanged(GLContext.ActiveContext, Object);
+                }
+                if (base.IsSelected != value)
+                {
+                    base.IsSelected = value;
                 }
             }
         }
@@ -46,6 +49,10 @@ namespace GLFrameworkEngine
             Object = obj;
             HasCheckBox = true;
             Header = $"Object";
+            Object.SelectedChanged += (o, e) =>
+            {
+                IsSelected = Object.IsSelected;
+            };
         }
 
         public override void OnDoubleClicked()
