@@ -462,9 +462,6 @@ namespace GLFrameworkEngine
             if (ActiveActions.Count == 0)
                 return 0;
 
-            foreach (var transform in ActiveTransforms.ToList())
-                transform.TransformActionApplied?.Invoke(this, EventArgs.Empty);
-
             TransformSettings.ActiveAxis = Axis.None;
 
             if (_draggedTransform)
@@ -486,6 +483,12 @@ namespace GLFrameworkEngine
             bool finished = false;
             foreach (var action in ActiveActions)
                 finished |= action.FinishTransform() == 1;
+
+            if (finished)
+            {
+                foreach (var transform in ActiveTransforms.ToList())
+                    transform.TransformActionApplied?.Invoke(this, EventArgs.Empty);
+            }
 
             return finished ? 1 : 0;
         }
