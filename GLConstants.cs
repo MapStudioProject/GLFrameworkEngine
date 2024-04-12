@@ -21,6 +21,12 @@ namespace GLFrameworkEngine
         public const string VColor = "vColor";
         public const string VBoneIndex = "vBoneIndex";
         public const string VBoneWeight = "vBoneWeight";
+        public const string VBoneIndex2 = "vBoneIndex2";
+        public const string VBoneWeight2 = "vBoneWeight2";
+        public const string VBoneIndex3 = "vBoneIndex3";
+        public const string VBoneWeight3 = "vBoneWeight3";
+        public const string VBoneIndex4 = "vBoneIndex4";
+        public const string VBoneWeight4 = "vBoneWeight4";
         public const string VTangent = "vTangent";
         public const string VBitangent = "vBitangent";
 
