@@ -89,6 +89,9 @@ namespace GLFrameworkEngine
                 if (!objects[i].CanSelect)
                     continue;
 
+                if (objects[i] is IDrawable && !((IDrawable)objects[i]).IsVisible)
+                    continue;
+
                 var screenPoint = context.WorldToScreen(objects[i].Transform.Position);
                 if (screenPoint.X < MaxPoint.X && screenPoint.X > MinPoint.X &&
                     screenPoint.Y < MaxPoint.Y && screenPoint.Y > MinPoint.Y)
