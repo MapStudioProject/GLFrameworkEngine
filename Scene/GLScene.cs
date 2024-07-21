@@ -219,7 +219,12 @@ namespace GLFrameworkEngine
                 if (obj is IEditModeObject && ((IEditModeObject)obj).EditMode)
                 {
                     foreach (var ob in ((IEditModeObject)obj).Selectables)
+                    {
+                        if (ob is IDrawable && !((IDrawable)ob).IsVisible)
+                            continue;
+
                         transformables.Add(ob);
+                    }
                 }
 
                 if (obj is ISelectableContainer) {
