@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Drawing;
 using GLFrameworkEngine;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Graphics;
 using OpenTK;
 using Toolbox.Core;
+using SixLabors.ImageSharp;
 
 namespace GLFrameworkEngine
 {
@@ -22,9 +22,9 @@ namespace GLFrameworkEngine
         static float CameraRotationY = 0;
         static float CameraDistance = 0;
 
-        public static Bitmap[] CreateRender(IGraphicsContext context, IEnumerable<EditableObject> drawables, int width = 32, int height = 32)
+        public static Image[] CreateRender(IGraphicsContext context, IEnumerable<EditableObject> drawables, int width = 32, int height = 32)
         {
-            List<Bitmap> textures = new List<Bitmap>();
+            List<Image> textures = new List<Image>();
 
             Framebuffer = new Framebuffer(FramebufferTarget.Framebuffer, width, height);
 
@@ -79,7 +79,7 @@ namespace GLFrameworkEngine
                 var rt = Framebuffer.ReadImagePixels();
                 textures.Add(rt);
 
-              //  rt.Save($"{System.IO.Path.GetFileNameWithoutExtension(drawable.Name)}.png");
+                //  rt.Save($"{System.IO.Path.GetFileNameWithoutExtension(drawable.Name)}.png");
             }
             Cleanup();
 

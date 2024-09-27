@@ -36,7 +36,7 @@ namespace GLFrameworkEngine
         }
 
         public virtual void Render(GLContext control, ShaderProgram shader, GenericPickableMesh mesh)
-        { 
+        {
 
         }
 
@@ -69,7 +69,7 @@ namespace GLFrameworkEngine
 
             //Render material data onto a textured sphere
             Render(control, shader, mesh);
- 
+
             GL.Enable(EnableCap.Blend);
             GL.BlendFuncSeparate(
                 BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha,
@@ -93,13 +93,10 @@ namespace GLFrameworkEngine
             GL.UseProgram(0);
             GL.BindTexture(TextureTarget.Texture2D, 0);
 
-            var thumbnail = frameBuffer.ReadImagePixels(true);
-
             //Dispose frame buffer
             frameBuffer.Dispose();
             frameBuffer.DisposeRenderBuffer();
 
-            this.Thumbnail = thumbnail;
             thumbnailUpdated?.Invoke(this, EventArgs.Empty);
         }
 
@@ -110,7 +107,7 @@ namespace GLFrameworkEngine
 
         private void DrawPlane(GLContext control)
         {
- 
+
         }
 
         public virtual void Dispose()

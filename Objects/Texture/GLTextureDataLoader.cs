@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Drawing.Imaging;
-using System.Drawing;
 using OpenTK.Graphics.OpenGL;
 
 namespace GLFrameworkEngine
@@ -23,6 +21,9 @@ namespace GLFrameworkEngine
                 case TextureTarget.TextureCubeMapArray:
                     LoadCompressedImage3D(target, mipLevel, depth, width, height, format, data);
                     break;
+                case TextureTarget.TextureCubeMap:
+                    LoadCompressedImageCubemap2D(mipLevel, depth, width, height, format, data);
+                    break;
             }
         }
 
@@ -38,6 +39,9 @@ namespace GLFrameworkEngine
                 case TextureTarget.Texture3D:
                 case TextureTarget.TextureCubeMapArray:
                     LoadImage3D(target, mipLevel, depth, width, height, format, data);
+                    break;
+                case TextureTarget.TextureCubeMap:
+                    LoadImageCubemap2D(mipLevel, depth, width, height, format, data);
                     break;
             }
         }
@@ -66,25 +70,12 @@ namespace GLFrameworkEngine
             }
         }
 
-        public static void LoadImage(TextureTarget target, int width, int height,
-               int depth, GLFormatHelper.PixelFormatInfo format, Bitmap bitmap, int mipLevel = 0)
+        static void LoadCompressedImageCube(int face, int mipLevel, int width, int height, InternalFormat format, byte[] data)
         {
-            BitmapData data = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
-           ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            int imageSize = GLFormatHelper.CalculateImageSize(width, height, format);
 
-            switch (target)
-            {
-                case TextureTarget.Texture2D:
-                    LoadImage2D(mipLevel, width, height, format, data.Scan0);
-                    break;
-                case TextureTarget.Texture2DArray:
-                case TextureTarget.Texture3D:
-                case TextureTarget.TextureCubeMapArray:
-                    LoadImage3D(target, mipLevel, depth, width, height, format, data.Scan0);
-                    break;
-            }
-
-            bitmap.UnlockBits(data);
+            GL.CompressedTexImage2D(TextureTarget.TextureCubeMapPositiveX + face, mipLevel,
+                format, width, height, 0, imageSize, data);
         }
 
         static void LoadCompressedImage2D(int mipLevel, int width, int height, InternalFormat format, byte[] data)

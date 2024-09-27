@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL;
-using System.Drawing;
 using Toolbox.Core;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace GLFrameworkEngine
 {
@@ -50,6 +52,56 @@ namespace GLFrameworkEngine
             return glTexture;
         }
 
+        public override void SaveDDS(string fileName)
+        {
+            List<STGenericTexture.Surface> surfaces = new List<STGenericTexture.Surface>();
+
+            Bind();
+
+            for (int i = 0; i < this.Depth; i++)
+            {
+                var surface = new STGenericTexture.Surface();
+                surfaces.Add(surface);
+
+                for (int m = 0; m < this.MipCount; m++)
+                {
+                    int mipWidth = (int)(Width * Math.Pow(0.5, m));
+                    int mipHeight = (int)(Height * Math.Pow(0.5, m));
+
+                    byte[] outputRaw = new byte[mipWidth * mipHeight * 4];
+
+                    GL.GetTextureSubImage(this.ID, m, 0, 0, i, Width, Height, 1,
+                        PixelFormat.Rgba, PixelType.UnsignedByte, outputRaw.Length, outputRaw);
+
+                    surface.mipmaps.Add(outputRaw);
+                }
+            }
+
+
+            var dds = new DDS();
+            dds.MainHeader.Width = (uint)this.Width;
+            dds.MainHeader.Height = (uint)this.Height;
+            dds.MainHeader.Depth = 1;
+            dds.MainHeader.MipCount = (uint)this.MipCount;
+            dds.MainHeader.PitchOrLinearSize = (uint)surfaces[0].mipmaps[0].Length;
+            dds.ArrayCount = (uint)this.Depth;
+
+            dds.SetFlags(TexFormat.RGBA8_UNORM, true, false);
+
+            if (dds.IsDX10)
+            {
+                if (dds.Dx10Header == null)
+                    dds.Dx10Header = new DDS.DX10Header();
+
+                dds.Dx10Header.ResourceDim = 3;
+                dds.Dx10Header.ArrayCount = (uint)this.Depth;
+            }
+
+            dds.Save(fileName, surfaces);
+
+            Unbind();
+        }
+
         public void Save(string fileName)
         {
             Bind();
@@ -60,17 +112,19 @@ namespace GLFrameworkEngine
             Unbind();
         }
 
-        public override System.Drawing.Bitmap ToBitmap(bool saveAlpha = true)
+        public override Image<Rgba32> ToBitmap(bool saveAlpha = true)
         {
             Bind();
 
             byte[] data = new byte[Width * Height * Depth * 4];
             GL.GetTexImage(Target, 0, PixelFormat.Bgra, PixelType.UnsignedByte, data);
 
+            var image = Image.LoadPixelData<Rgba32>(data, Width * Depth, Height);
+            image.Mutate(x => x.RotateFlip(RotateMode.None, FlipMode.Vertical));
+
             Unbind();
 
-            return Toolbox.Core.Imaging.BitmapExtension.CreateBitmap(
-                data, Width * Depth, Height);
+            return image;
         }
     }
 }

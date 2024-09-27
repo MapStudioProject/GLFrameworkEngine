@@ -36,6 +36,8 @@ namespace GLFrameworkEngine
         static readonly Dictionary<TexFormat, PixelFormatInfo> PixelFormatList = new Dictionary<TexFormat, PixelFormatInfo>
         {
             { TexFormat.RG11B10_FLOAT, new PixelFormatInfo(All.R11fG11fB10f, PixelFormat.Rgb, PixelType.UnsignedInt10F11F11FRev) },
+            { TexFormat.RGBA16_FLOAT, new PixelFormatInfo(All.Rgba16f, PixelFormat.Rgba, PixelType.HalfFloat) },
+
             { TexFormat.RGBA8_UNORM, new PixelFormatInfo(All.Rgba, PixelFormat.Bgra, PixelType.UnsignedByte) },
             { TexFormat.RGBA8_SRGB, new PixelFormatInfo(All.SrgbAlpha, PixelFormat.Bgra, PixelType.UnsignedByte) },
             { TexFormat.RGBA32_FLOAT, new PixelFormatInfo(All.Rgba32f, PixelFormat.Rgba, PixelType.Float) },
@@ -44,8 +46,10 @@ namespace GLFrameworkEngine
             { TexFormat.RG8_SNORM, new PixelFormatInfo(All.Rg8Snorm, PixelFormat.Rg, PixelType.Byte) },
             { TexFormat.RG8_UINT, new PixelFormatInfo(All.Rg8ui, PixelFormat.RgInteger, PixelType.UnsignedByte) },
             { TexFormat.RG8_SINT, new PixelFormatInfo(All.Rg8i, PixelFormat.RgInteger, PixelType.Byte) },
-            { TexFormat.RG16_FLOAT, new PixelFormatInfo(All.Rg16, PixelFormat.Rg, PixelType.HalfFloat) },
+            { TexFormat.RG16_FLOAT, new PixelFormatInfo(All.Rg16f, PixelFormat.Rg, PixelType.HalfFloat) },
+            { TexFormat.RG16_UNORM, new PixelFormatInfo(All.R16, PixelFormat.Rg, PixelType.UnsignedShort) },
             { TexFormat.RGB565_UNORM, new PixelFormatInfo( All.Rgb565, PixelFormat.Rgb, PixelType.UnsignedShort565Reversed) },
+            { TexFormat.RGB9E5_SHAREDEXP, new PixelFormatInfo( All.Rgb9E5, PixelFormat.Rgb, PixelType.UnsignedInt5999Rev) },
         };
 
         static readonly Dictionary<TexFormat, InternalFormat> InternalFormatList = new Dictionary<TexFormat, InternalFormat>

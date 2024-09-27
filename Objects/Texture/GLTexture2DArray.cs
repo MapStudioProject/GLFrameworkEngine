@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL;
-using System.Drawing;
 using Toolbox.Core;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using System.Net.Mail;
+using GLFrameworkEngine.ImageSharp;
 
 namespace GLFrameworkEngine
 {
@@ -89,6 +92,20 @@ namespace GLFrameworkEngine
             return texture;
         }
 
+        public void Resize(int width, int height)
+        {
+            Width = width;
+            Height = height;
+
+            Bind();
+
+            GL.TexImage3D(Target, 0, PixelInternalFormat,
+                         Width, Height, ArrayCount, 0,
+                           PixelFormat, PixelType, IntPtr.Zero);
+
+            Unbind();
+        }
+
         public static GLTexture2DArray CreateConstantColorTexture(int width, int height, int count, byte R, byte G, byte B, byte A)
         {
             GLTexture2DArray texture = new GLTexture2DArray();
@@ -129,7 +146,7 @@ namespace GLFrameworkEngine
             return glTexture;
         }
 
-        public static GLTexture2DArray FromDDS(DDS dds)
+        public static GLTexture2DArray FromDDS(DDS dds, bool flip = false)
         {
             GLTexture2DArray texture = new GLTexture2DArray();
             texture.Width = (int)dds.Width; texture.Height = (int)dds.Height;
@@ -155,7 +172,7 @@ namespace GLFrameworkEngine
                 for (int i = 0; i < dds.ArrayCount; i++)
                 {
                     var data = dds.GetDecodedSurface(i, j);
-                    if (i == 0 || i == 1)
+                    if (flip)
                         data = FlipHorizontal(mipWidth, mipHeight, data);
 
                     levels.Add(data);
@@ -281,7 +298,7 @@ namespace GLFrameworkEngine
             return texture;
         }
 
-        public static GLTexture2DArray FromBitmap(Bitmap image)
+        public static GLTexture2DArray FromBitmap(Image<Rgba32> image)
         {
             GLTexture2DArray texture = new GLTexture2DArray();
             texture.Width = image.Width; texture.Height = image.Height;
@@ -316,42 +333,49 @@ namespace GLFrameworkEngine
             }
         }
 
-        public void InsertImage(byte[] buffer, int level = 0)
+        public void InsertImage<T>(T[] rgba, int level = 0) where T : struct
         {
             Bind();
 
-            GL.TexSubImage3D(Target, 0, 0, 0, level, this.Width, this.Height, 1,
-                   this.PixelFormat, this.PixelType, buffer);
+            GL.TexSubImage3D(Target, 0, 0, 0, level, Width, Height, 1,
+                  PixelFormat, PixelType, rgba);
 
             Unbind();
         }
 
-        public void InsertImage(Bitmap image, int level = 0)
+        public void InsertImage(byte[] rgba, int level = 0)
         {
             Bind();
 
-            System.Drawing.Imaging.BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
-              System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-            GL.TexSubImage3D(Target, 0, 0, 0, level, this.Width, this.Height, 1,
-                this.PixelFormat, this.PixelType, data.Scan0);
-
-            image.UnlockBits(data);
+            GL.TexSubImage3D(Target, 0, 0, 0, level, Width, Height, 1,
+                  OpenTK.Graphics.OpenGL.PixelFormat.Rgba, PixelType.UnsignedByte, rgba);
 
             Unbind();
         }
 
-        public void LoadImage(Bitmap image, int level = 0, int count = 1)
+        public void InsertImage(Image<Rgba32> image, int level = 0)
+        {
+            if (image.Width != this.Width || image.Height != this.Height)
+                throw new Exception();
+
+            Bind();
+
+            var rgba = image.GetSourceInBytes();
+
+            GL.TexSubImage3D(Target, 0, 0, 0, level, image.Width, image.Height, 1,
+                 this.PixelFormat, this.PixelType, rgba);
+
+            Unbind();
+        }
+
+        public void LoadImage(Image<Rgba32> image, int level = 0, int count = 1)
         {
             Bind();
 
-            System.Drawing.Imaging.BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
-              System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            var rgba = image.GetSourceInBytes();
 
-            GL.TexImage3D(Target, level, PixelInternalFormat.Rgba, data.Width, data.Height, count, 0,
-                  OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
-
-            image.UnlockBits(data);
+            GL.TexImage3D(Target, level, PixelInternalFormat.Rgba, image.Width, image.Height, count, 0,
+                  OpenTK.Graphics.OpenGL.PixelFormat.Rgba, PixelType.UnsignedByte, rgba);
 
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2DArray);
 
@@ -372,7 +396,7 @@ namespace GLFrameworkEngine
         {
             var stream = new System.IO.MemoryStream();
             var bmp = ToBitmap(saveAlpha);
-            bmp.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+            bmp.SaveAsPng(stream);
             return stream;
         }
 
@@ -385,7 +409,7 @@ namespace GLFrameworkEngine
                 GL.GetTextureSubImage(this.ID, 0, 0, 0, i, Width, Height, 1,
                     PixelFormat.Bgra, PixelType.UnsignedByte, output.Length, output);
 
-                var bitmap = BitmapImageHelper.CreateBitmap(output, Width, Height);
+                var bitmap = Image.LoadPixelData<Rgba32>(output, Width, Height);
                 bitmap.Save(fileName + $"_{i}.png");
             }
             Unbind();
@@ -422,7 +446,7 @@ namespace GLFrameworkEngine
             dds.MainHeader.MipCount = (uint)this.MipCount;
             dds.MainHeader.PitchOrLinearSize = (uint)surfaces[0].mipmaps[0].Length;
 
-            dds.SetFlags(TexFormat.RGBA8_UNORM, false, true);
+            dds.SetFlags(TexFormat.RGBA8_UNORM, ArrayCount > 1, false);
 
             if (dds.IsDX10)
             {
@@ -434,6 +458,8 @@ namespace GLFrameworkEngine
             }
 
             dds.Save(fileName, surfaces);
+
+            surfaces.Clear();
 
             Unbind();
         }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using Toolbox.Core;
 
 namespace GLFrameworkEngine
@@ -25,7 +27,9 @@ namespace GLFrameworkEngine
             texture.PixelInternalFormat = pixelInternalFormat;
             texture.Width = size; texture.Height = size;
             texture.Target = TextureTarget.TextureCubeMapArray;
-            texture.MinFilter = TextureMinFilter.LinearMipmapLinear;
+            texture.MinFilter = TextureMinFilter.Linear;
+            if (texture.MipCount > 1)
+                texture.MinFilter = TextureMinFilter.LinearMipmapLinear;
             texture.MagFilter = TextureMagFilter.Linear;
             texture.MipCount = mipCount;
             texture.ArrayCount = arrayCount;
@@ -40,8 +44,8 @@ namespace GLFrameworkEngine
                 int mipWidth = (int)(texture.Width * Math.Pow(0.5, mip));
                 int mipHeight = (int)(texture.Height * Math.Pow(0.5, mip));
 
-                GL.TexImage3D(texture.Target, 0, texture.PixelInternalFormat,
-                    mipWidth, mipHeight, texture.ArrayCount * 6, mip,
+                GL.TexImage3D(texture.Target, mip, texture.PixelInternalFormat,
+                    mipWidth, mipHeight, texture.ArrayCount * 6, 0,
                       texture.PixelFormat, texture.PixelType, IntPtr.Zero);
             }
 
@@ -53,7 +57,7 @@ namespace GLFrameworkEngine
         public static GLTextureCubeArray FromGeneric(STGenericTexture texture, ImageParameters parameters)
         {
             GLTextureCubeArray glTexture = new GLTextureCubeArray();
-            glTexture.Target = TextureTarget.Texture2D;
+            glTexture.Target = TextureTarget.TextureCubeMapArray;
             glTexture.Width = (int)texture.Width;
             glTexture.Height = (int)texture.Height;
             glTexture.LoadImage(texture, parameters);
@@ -168,8 +172,8 @@ namespace GLFrameworkEngine
                 //Remove alpha
                 output = SetImageData(output, true, true);
 
-                var bitmap = BitmapImageHelper.CreateBitmap(output, Width, Height);
-                bitmap.Save(fileName + $"_{i}.png");
+                var bitmap = Image.LoadPixelData<Rgba32>(output, Width, Height);
+                bitmap.SaveAsPng(fileName + $"_{i}.png");
             }
             Unbind();
         }

@@ -15,15 +15,7 @@ namespace GLFrameworkEngine
         /// <summary>
         /// The rendered texture instance used to display the texture in OpenGL.
         /// </summary>
-        public GLTexture RenderableTex { get; set; }
-
-        public static System.Drawing.Bitmap CreateTextureRender(GLContext control, GLTexture renderableTex, int width = 50, int height = 50)
-        {
-            TextureAsset texture = new TextureAsset();
-            texture.RenderableTex = renderableTex;
-            texture.CreateTextureRender(control, null, width, height);
-            return texture.Thumbnail;
-        }
+        public virtual GLTexture RenderableTex { get; set; }
 
         public void CreateTextureRender(GLContext control, EventHandler thumbnailUpdate, int width = 50, int height = 50)
         {
@@ -48,13 +40,11 @@ namespace GLFrameworkEngine
             GL.BindTexture(TextureTarget.Texture2D, 0);
 
             var thumbnail = frameBuffer.ReadImagePixels(true);
-            thumbnail.RotateFlip(System.Drawing.RotateFlipType.RotateNoneFlipY);
 
             //Dispose frame buffer
             frameBuffer.Dispose();
             frameBuffer.DisposeRenderBuffer();
 
-            this.Thumbnail = thumbnail;
             thumbnailUpdate?.Invoke(this, EventArgs.Empty);
         }
     }
