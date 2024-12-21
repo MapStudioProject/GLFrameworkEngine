@@ -38,8 +38,8 @@ namespace GLFrameworkEngine
             { TexFormat.RG11B10_FLOAT, new PixelFormatInfo(All.R11fG11fB10f, PixelFormat.Rgb, PixelType.UnsignedInt10F11F11FRev) },
             { TexFormat.RGBA16_FLOAT, new PixelFormatInfo(All.Rgba16f, PixelFormat.Rgba, PixelType.HalfFloat) },
 
-            { TexFormat.RGBA8_UNORM, new PixelFormatInfo(All.Rgba, PixelFormat.Bgra, PixelType.UnsignedByte) },
-            { TexFormat.RGBA8_SRGB, new PixelFormatInfo(All.SrgbAlpha, PixelFormat.Bgra, PixelType.UnsignedByte) },
+            { TexFormat.RGBA8_UNORM, new PixelFormatInfo(All.Rgba, PixelFormat.Rgba, PixelType.UnsignedByte) },
+            { TexFormat.RGBA8_SRGB, new PixelFormatInfo(All.SrgbAlpha, PixelFormat.Rgba, PixelType.UnsignedByte) },
             { TexFormat.RGBA32_FLOAT, new PixelFormatInfo(All.Rgba32f, PixelFormat.Rgba, PixelType.Float) },
             { TexFormat.R8_UNORM, new PixelFormatInfo(All.R8, PixelFormat.Red, PixelType.UnsignedByte) },
             { TexFormat.RG8_UNORM, new PixelFormatInfo(All.Rg8, PixelFormat.Rg, PixelType.UnsignedByte) },
