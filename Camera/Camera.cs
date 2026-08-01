@@ -371,6 +371,28 @@ namespace GLFrameworkEngine
             RotationZ = rot.Z;
         }
 
+        public void SetLookAt(Vector3 eyePosition, Vector3 targetPosition, Vector3? up = null)
+        {
+            up ??= Vector3.UnitY;
+
+            Vector3 direction = (eyePosition - targetPosition).Normalized();
+            RotationX = MathF.Asin(direction.Y);
+            RotationY = -MathF.Atan2(direction.X, direction.Z);
+            RotationZ = 0f;
+
+            if (cameraMode == CameraMode.Inspect)
+            {
+                TargetPosition = targetPosition;
+                TargetDistance = (eyePosition - targetPosition).Length;
+            }
+            else
+            {
+                TargetPosition = eyePosition;
+                TargetDistance = 0f; 
+            }
+            UpdateMatrices();
+        }
+
         /// <summary>
         /// Rotates the camera from a given eye and target position.
         /// </summary>
@@ -480,7 +502,7 @@ namespace GLFrameworkEngine
             return pos + InverseRotationMatrix.Row2 * dist;
         }
 
-        public Vector3 GetLookAtPostion(float dist = 1.0f)
+        public Vector3 GetLookAtPosition(float dist = 1000f)
         {
             //Get the eye direction and subtract from the camera position
             return GetViewPostion() - InverseRotationMatrix.Row2 * dist;
