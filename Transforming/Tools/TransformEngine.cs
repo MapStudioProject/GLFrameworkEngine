@@ -449,6 +449,10 @@ namespace GLFrameworkEngine
             bool finished = false;
             foreach (var action in ActiveActions)
                 finished |= action.FinishTransform() == 1;
+            
+            // Once all transforms have been applied, reset the previous transform. This prevents snapping back
+            //  to the previous transform when using multiple fixed-axis transforms in a row.
+            ReloadPreviousTransforms();
 
             return finished ? 1 : 0;
         }
